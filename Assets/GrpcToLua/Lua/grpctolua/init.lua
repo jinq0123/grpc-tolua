@@ -9,7 +9,7 @@ end
 -- TODO: channel with credentials
 
 function M.new_client(channel, service_name)
-    return Client:new(channel, service_name)
+    return Client(channel, service_name)
 end
 
 return M
