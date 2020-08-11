@@ -69,4 +69,6 @@ end
 
 1. Update to the latest tolua
 	* Copy Assets, Unity5.x, Luajit64, Luajit from tolua
+1. Update grpc_unity_package
+	* https://github.com/grpc/grpc/tree/master/src/csharp/experimental#unity
 1. Open `Assets\GrpcToLua\Examples\RouteGuide\RouteGuide.unity`

@@ -60,3 +60,4 @@ crashlytics-build.properties
 
 /Assets/Source/Generate/*.cs
 /Assets/Source/Generate/*.meta
+/Assets/grpc_unity_package.*
