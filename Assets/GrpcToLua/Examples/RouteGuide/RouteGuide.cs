@@ -14,18 +14,38 @@ public class RouteGuide : MonoBehaviour
 
         function TestGetFeature()
             print('TestGetFeature')
+            coroutine.start(CoGetFeature)
         end
 
         function TestListFeatures()
             print('TestListFeatures')
+            coroutine.start(CoListFeatures)
         end
 
         function TestRecordRoute()
             print('TestRecordRoute')
+            coroutine.start(CoRecordRoute)
         end
 
         function TestRouteChat()
             print('TestRouteChat')
+            coroutine.start(CoRouteChat)
+        end
+
+        function CoGetFeature()
+            print('CoGetFeature')
+        end
+
+        function CoListFeatures()
+            print('CoListFeatures')
+        end
+
+        function CoRecordRoute()
+            print('CoRecordRoute')
+        end
+
+        function CoRouteChat()
+            print('CoRouteChat')
         end
     ";  // script
 

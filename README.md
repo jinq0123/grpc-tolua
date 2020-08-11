@@ -1,4 +1,5 @@
 # grpc-tolua
+
 unity grpc for lua using tolua
 
 (Work In Progress)
@@ -10,6 +11,8 @@ It uses [tolua](https://github.com/topameng/tolua) to bind Unity C# and Lua.
 * only grpc client, no server
 
 ## Usage example
+
+See [`Examples/RouteGuide`](Assets/GrpcToLua/Examples/RouteGuide)
 
 ```
 local channel = grpc.Channel.New("localhost:50051")
