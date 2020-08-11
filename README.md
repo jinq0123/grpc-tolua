@@ -60,5 +60,9 @@ functine RouteChat()
 		call.RequestStream.Write(routeNote)
 	end
 end
-
 ```
+
+## How to run example
+
+1. Update to the latest tolua
+	* Copy Assets, Unity5.x, Luajit64, Luajit from tolua
