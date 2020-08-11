@@ -12,9 +12,9 @@ public class RouteGuide : MonoBehaviour
     string script = @"
         print('script')
 
-        local grpctolua = require("grpctolua") 
-        local channel = grpctolua.new_channel("localhost:50052")
-        local client = grcptolua.new_client(channel, "routeguide.RouteGuide")
+        local grpctolua = require('grpctolua')
+        local channel = grpctolua.new_channel('localhost:50052')
+        local client = grcptolua.new_client(channel, 'routeguide.RouteGuide')
 
         function TestGetFeature()
             print('TestGetFeature')
@@ -38,8 +38,8 @@ public class RouteGuide : MonoBehaviour
 
         function CoGetFeature()
             print('CoGetFeature')
-            feature = client.call("GetFeature", GetPoint(409146138, -746188906))
-            PrintTable("feature: "..feature)
+            feature = client.call('GetFeature', GetPoint(409146138, -746188906))
+            PrintTable('feature', feature)
         end
 
         function CoListFeatures()
@@ -58,10 +58,10 @@ public class RouteGuide : MonoBehaviour
             return { Latitude = latitude, Longitude = longitude }
         end
 
-        function PrintTable(t)
-            print('{')
+        function PrintTable(name, t)
+            print(name..': {')
             for pos, val in pairs(t) do
-                print(string.format('    [%q] => %q', pos, val)
+                print(string.format('    [%q] => %q', pos, val))
             end
             print('}')
         end
