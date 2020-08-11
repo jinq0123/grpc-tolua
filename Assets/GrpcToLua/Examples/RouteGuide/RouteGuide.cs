@@ -3,14 +3,33 @@ using System;
 using System.Collections;
 using LuaInterface;
 
-//例子5和6展示的两套协同系统勿交叉使用，此为推荐方案
+// Test RouteGuide grpc using lua
 public class RouteGuide : MonoBehaviour 
 {
-    public TextAsset luaFile = null;
     private LuaState lua = null;
     private LuaLooper looper = null;
 
-	void Awake () 
+    string script = @"
+        print("script")
+
+        function TestGetFeature()
+            print("TestGetFeature")
+        end
+
+        function TestListFeatures()
+            print("TestListFeatures")
+        end
+
+        function TestRecordRoute()
+            print("TestRecordRoute")
+        end
+
+        function TestRouteChat()
+            print("TestRouteChat")
+        end
+    ";  // script
+
+    void Awake () 
     {
 #if UNITY_5 || UNITY_2017 || UNITY_2018
         Application.logMessageReceived += ShowTips;
@@ -25,11 +44,7 @@ public class RouteGuide : MonoBehaviour
         looper = gameObject.AddComponent<LuaLooper>();
         looper.luaState = lua;
 
-        lua.DoString(luaFile.text, "TestLuaCoroutine.lua");
-        LuaFunction f = lua.GetFunction("TestCortinue");
-        f.Call();
-        f.Dispose();
-        f = null;        
+        lua.DoString(script, "RouteGuide.cs");
     }
 
     void OnApplicationQuit()
@@ -56,23 +71,30 @@ public class RouteGuide : MonoBehaviour
     {
         GUI.Label(new Rect(Screen.width / 2 - 300, Screen.height / 2 - 200, 600, 400), tips);
 
-        if (GUI.Button(new Rect(50, 50, 120, 45), "Start Counter"))
+        string funcName = null;
+        if (GUI.Button(new Rect(50, 50, 120, 45), "Test GetFeature"))
         {
-            tips = null;
-            LuaFunction func = lua.GetFunction("StartDelay");
-            func.Call();
-            func.Dispose();
+            funcName = "TestGetFeature";
         }
-        else if (GUI.Button(new Rect(50, 150, 120, 45), "Stop Counter"))
+        else if (GUI.Button(new Rect(50, 150, 120, 45), "Test ListFeatures"))
         {
-            LuaFunction func = lua.GetFunction("StopDelay");
-            func.Call();
-            func.Dispose();
+            funcName = "TestListFeatures";
         }
-        else if (GUI.Button(new Rect(50, 250, 120, 45), "GC"))
+        else if (GUI.Button(new Rect(50, 250, 120, 45), "Test RecordRoute"))
         {
-            lua.DoString("collectgarbage('collect')", "TestCoroutine.cs");
-            Resources.UnloadUnusedAssets();
+            funcName = "TestRecordRoute";
         }
+        else if (GUI.Button(new Rect(50, 300, 120, 45), "Test RouteChat"))
+        {
+            funcName = "TestRecordRoute";
+        }
+        else
+        {
+            return;
+        }
+        
+        LuaFunction func = lua.GetFunction(funcName);
+        func.Call();
+        func.Dispose();
     }
 }
