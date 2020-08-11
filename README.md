@@ -66,3 +66,4 @@ end
 
 1. Update to the latest tolua
 	* Copy Assets, Unity5.x, Luajit64, Luajit from tolua
+1. Open `Assets\GrpcToLua\Examples\RouteGuide\RouteGuide.unity`

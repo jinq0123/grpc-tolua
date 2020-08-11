@@ -10,22 +10,22 @@ public class RouteGuide : MonoBehaviour
     private LuaLooper looper = null;
 
     string script = @"
-        print("script")
+        print('script')
 
         function TestGetFeature()
-            print("TestGetFeature")
+            print('TestGetFeature')
         end
 
         function TestListFeatures()
-            print("TestListFeatures")
+            print('TestListFeatures')
         end
 
         function TestRecordRoute()
-            print("TestRecordRoute")
+            print('TestRecordRoute')
         end
 
         function TestRouteChat()
-            print("TestRouteChat")
+            print('TestRouteChat')
         end
     ";  // script
 
@@ -72,19 +72,19 @@ public class RouteGuide : MonoBehaviour
         GUI.Label(new Rect(Screen.width / 2 - 300, Screen.height / 2 - 200, 600, 400), tips);
 
         string funcName = null;
-        if (GUI.Button(new Rect(50, 50, 120, 45), "Test GetFeature"))
+        if (GUI.Button(new Rect(50, 50, 120, 45), "GetFeature"))
         {
             funcName = "TestGetFeature";
         }
-        else if (GUI.Button(new Rect(50, 150, 120, 45), "Test ListFeatures"))
+        else if (GUI.Button(new Rect(50, 100, 120, 45), "ListFeatures"))
         {
             funcName = "TestListFeatures";
         }
-        else if (GUI.Button(new Rect(50, 250, 120, 45), "Test RecordRoute"))
+        else if (GUI.Button(new Rect(50, 150, 120, 45), "RecordRoute"))
         {
             funcName = "TestRecordRoute";
         }
-        else if (GUI.Button(new Rect(50, 300, 120, 45), "Test RouteChat"))
+        else if (GUI.Button(new Rect(50, 200, 120, 45), "RouteChat"))
         {
             funcName = "TestRecordRoute";
         }
