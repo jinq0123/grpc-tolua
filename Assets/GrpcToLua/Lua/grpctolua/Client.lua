@@ -1,4 +1,5 @@
 -- Class follows: http://lua-users.org/wiki/LuaStyleGuide finance/BankAccount.lua
+-- Client class forwards calls to c# and handles coroutine wait.
 
 local Client = {}
 Client.__index = Client

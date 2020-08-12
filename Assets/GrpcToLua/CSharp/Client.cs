@@ -9,17 +9,28 @@ namespace GrpcToLua
         readonly grpc::ChannelBase channel;
         readonly string serviceName;
 
+        MethodDictionary unaryMethods;
+        MethodDictionary clientStreamingMethods;
+        MethodDictionary serverStreamingMethods;
+        MethodDictionary duplexStreamingMethods;
+
         public Client(grpc::ChannelBase channel, string serviceName)
         {
             this.channel = channel;
             this.serviceName = serviceName;
+
+            unaryMethods = new MethodDictionary(serviceName, grpc.MethodType.Unary);
+            clientStreamingMethods = new MethodDictionary(serviceName, grpc.MethodType.ClientStreaming);
+            serverStreamingMethods = new MethodDictionary(serviceName, grpc.MethodType.ServerStreaming);
+            duplexStreamingMethods = new MethodDictionary(serviceName, grpc.MethodType.DuplexStreaming);
         }
-        
+
         public UnaryCall UnaryCall(string methodName, LuaTable request)
         {
             Debug.LogFormat("Client.UnaryCall(methodNaame={0}, request={1})", methodName, request);
             // TODO
-            return new UnaryCall();
+            var method = unaryMethods.GetMethod(methodName);
+            return CallInvoker.AsyncUnaryCall(method, null, options, request);
         }
         
         public ServerStreamingCall ServerStreamingCall(string methodName, LuaTable request)
