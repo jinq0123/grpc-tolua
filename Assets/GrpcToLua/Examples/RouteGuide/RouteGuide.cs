@@ -14,7 +14,7 @@ public class RouteGuide : MonoBehaviour
 
         local grpctolua = require('grpctolua')
         local channel = grpctolua.new_channel('localhost:50052')
-        local client = grcptolua.new_client(channel, 'routeguide.RouteGuide')
+        local client = grpctolua.new_client(channel, 'routeguide.RouteGuide')
 
         function TestGetFeature()
             print('TestGetFeature')
@@ -75,7 +75,9 @@ public class RouteGuide : MonoBehaviour
         Application.RegisterLogCallback(ShowTips);
 #endif        
         new LuaResLoader();
-        lua  = new LuaState();
+        lua = new LuaState();
+        lua.AddSearchPath(Application.dataPath + "/GrpcToLua/Lua");
+        LuaFileUtils.Instance.AddSearchPath(Application.dataPath + "/GrpcToLua/Lua/?/init.lua");
         lua.Start();
         LuaBinder.Bind(lua);
         DelegateFactory.Init();         

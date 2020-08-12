@@ -71,4 +71,24 @@ end
 	* Copy Assets, Unity5.x, Luajit64, Luajit from tolua
 1. Update grpc_unity_package
 	* https://github.com/grpc/grpc/tree/master/src/csharp/experimental#unity
+1. Add in `Assets\Editor\Custom\CustomSetting.cs customTypeList`
+	```
+	public static BindType[] customTypeList =
+	{
+		...
+		_GT(typeof(Grpc.Core.Channel)),
+		_GT(typeof(Grpc.Core.ChannelCredentials)),
+	}
+	```
 1. Open `Assets\GrpcToLua\Examples\RouteGuide\RouteGuide.unity`
+1. Lua -> Generate All
+
+## Trouble Shooting
+
+### module 'grpctolua' not found
+Make sure to add lua search path like this:
+```
+    lua = new LuaState();
+    LuaFileUtils.Instance.AddSearchPath(Application.dataPath + "/GrpcToLua/Lua/?/init.lua");
+    // TODO lua.AddSearchPath(Application.dataPath + "/GrpcToLua/Lua");
+```
