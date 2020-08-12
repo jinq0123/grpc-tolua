@@ -36,8 +36,8 @@ public class RouteGuide : MonoBehaviour
 
         function CoGetFeature()
             print('CoGetFeature')
-            feature = client.call('GetFeature', GetPoint(409146138, -746188906))
-            PrintTable('feature', feature)
+            feature = client:call('GetFeature', GetPoint(409146138, -746188906))
+            print('feature: '..DumpTable(feature))
         end
 
         function CoListFeatures()
@@ -56,12 +56,12 @@ public class RouteGuide : MonoBehaviour
             return { Latitude = latitude, Longitude = longitude }
         end
 
-        function PrintTable(name, t)
-            print(name..': {')
+        function DumpTable(t)
+            local s = '{'
             for pos, val in pairs(t) do
-                print(string.format('    [%q] => %q', pos, val))
+                s = s .. string.format('[%q] => %q, ', pos, val)
             end
-            print('}')
+            return s .. '}'
         end
     ";  // script
 
