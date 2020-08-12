@@ -155,6 +155,11 @@ public static class CustomSettings
         _GT(typeof(Grpc.Core.Channel)),
         _GT(typeof(Grpc.Core.ChannelCredentials)),
         _GT(typeof(GrpcToLua.InsecureCredentials)),
+        _GT(typeof(GrpcToLua.Client)),
+        _GT(typeof(GrpcToLua.UnaryCall)),
+        _GT(typeof(GrpcToLua.ClientStreamingCall)),
+        _GT(typeof(GrpcToLua.ServerStreamingCall)),
+        _GT(typeof(GrpcToLua.DuplexStreamingCall)),
     };
 
     public static List<Type> dynamicList = new List<Type>()
