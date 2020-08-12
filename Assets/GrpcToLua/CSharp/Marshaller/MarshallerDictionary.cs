@@ -19,18 +19,20 @@ namespace GrpcToLua
                 return result;
             }
 
-            var newMarshaller = grpc::Marshallers.Create(Serializer(typeName), Deserializer(typeName));
+            var newMarshaller = grpc::Marshallers.Create(
+                (arg) => Serialize(typeName, arg),
+                (buf) => Deserialize(typeName, buf));
             dict[typeName] = newMarshaller;
             return newMarshaller;
         }
         
-        static private Func<LuaTable, byte[]> Serializer(string typeName)
+        static private byte[] Serialize(string requestTypeName, LuaTable request)
         {
             // TODO
             return null;
         }
         
-        static private Func<byte[], LuaTable> Deserializer(string typeName)
+        static private LuaTable Deserialize(string responseTypeName, byte[] responseBuf)
         {
             // TODO
             return null;
