@@ -154,6 +154,7 @@ public static class CustomSettings
         // GrpcToLua
         _GT(typeof(Grpc.Core.Channel)),
         _GT(typeof(Grpc.Core.ChannelCredentials)),
+        _GT(typeof(GrpcToLua.InsecureCredentials)),
     };
 
     public static List<Type> dynamicList = new List<Type>()

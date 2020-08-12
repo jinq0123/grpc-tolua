@@ -10,8 +10,6 @@ public class RouteGuide : MonoBehaviour
     private LuaLooper looper = null;
 
     string script = @"
-        print('script')
-
         local grpctolua = require('grpctolua')
         local channel = grpctolua.new_channel('localhost:50052')
         local client = grpctolua.new_client(channel, 'routeguide.RouteGuide')
