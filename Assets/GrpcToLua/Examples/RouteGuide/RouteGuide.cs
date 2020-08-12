@@ -77,7 +77,6 @@ public class RouteGuide : MonoBehaviour
         new LuaResLoader();
         lua = new LuaState();
         lua.AddSearchPath(Application.dataPath + "/GrpcToLua/Lua");
-        LuaFileUtils.Instance.AddSearchPath(Application.dataPath + "/GrpcToLua/Lua/?/init.lua");
         lua.Start();
         LuaBinder.Bind(lua);
         DelegateFactory.Init();         
