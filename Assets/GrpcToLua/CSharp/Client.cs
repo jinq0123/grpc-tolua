@@ -28,9 +28,14 @@ namespace GrpcToLua
         public UnaryCall UnaryCall(string methodName, LuaTable request)
         {
             Debug.LogFormat("Client.UnaryCall(methodNaame={0}, request={1})", methodName, request);
-            // TODO
+
             var method = unaryMethods.GetMethod(methodName);
-            return CallInvoker.AsyncUnaryCall(method, null, options, request);
+            // TODO: input headers, deadline, cancellationToken
+            grpc::Metadata headers = null;
+            global::System.DateTime? deadline = null;
+            global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken);
+            var options = new grpc::CallOptions(headers, deadline, cancellationToken);
+            return callInvoker.AsyncUnaryCall(method, null, options, request);
         }
         
         public ServerStreamingCall ServerStreamingCall(string methodName, LuaTable request)
@@ -53,5 +58,5 @@ namespace GrpcToLua
             // TODO
             return new DuplexStreamingCall();
         }
-    }
-}
+    }  // class Client
+}  // namespace GrpcToLua
