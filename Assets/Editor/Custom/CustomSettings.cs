@@ -154,13 +154,17 @@ public static class CustomSettings
         // GrpcToLua
         _GT(typeof(Grpc.Core.Channel)),
         _GT(typeof(Grpc.Core.ChannelCredentials)),
+        _GT(typeof(Grpc.Core.Status)),
+        _GT(typeof(Grpc.Core.AsyncUnaryCall<LuaInterface.LuaTable>)),
         _GT(typeof(GrpcToLua.InsecureCredentials)),
         _GT(typeof(GrpcToLua.Client)),
         // TODO del _GT(typeof(GrpcToLua.UnaryCall)),
         _GT(typeof(GrpcToLua.ClientStreamingCall)),
         _GT(typeof(GrpcToLua.ServerStreamingCall)),
         _GT(typeof(GrpcToLua.DuplexStreamingCall)),
-        _GT(typeof(Grpc.Core.AsyncUnaryCall<LuaInterface.LuaTable>)),
+        _GT(typeof(System.Runtime.CompilerServices.TaskAwaiter<LuaInterface.LuaTable>)),
+        _GT(typeof(System.Threading.Tasks.Task)),
+        // _GT(typeof(System.Threading.Tasks.Task<LuaInterface.LuaTable>)),
     };
 
     public static List<Type> dynamicList = new List<Type>()

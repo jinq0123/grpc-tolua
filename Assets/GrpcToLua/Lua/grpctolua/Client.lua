@@ -4,6 +4,8 @@
 local Client = {}
 Client.__index = Client
 
+local await = require("grpctolua.await")
+
 local function construct(self, channel, service_name)
     print(string.format("construct(self=%q(%s), channel=%q(%s), service_name=%q(%s))", self, type(self), channel, type(channel), service_name, type(service_name)))
     local clt = {}
@@ -20,8 +22,15 @@ function Client:call(method_name, request)
     print(string.format("Client:call(method_name=%q, request=%q)", method_name, request))
     -- TODO
     call = self.client:UnaryCall(method_name, request)
+    await(call)
     print(string.format("call: %q(%s)", call, type(call)))
-    return { aaa = 123 }
+    status = call:GetStatus()
+    print(string.format("status: %q(%s)", status, type(status)))
+    resp = call.ResponseAsync
+    print(string.format("resp: %q(%s)", resp, type(resp)))
+    result = resp.Result
+    print(string.format("resp: %q(%s)", result, type(result)))
+    return result
 end
 
 return Client
