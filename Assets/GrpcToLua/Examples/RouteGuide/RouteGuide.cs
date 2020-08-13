@@ -134,5 +134,6 @@ public class RouteGuide : MonoBehaviour
         LuaFunction func = lua.GetFunction(funcName);
         func.Call();
         func.Dispose();
+        lua.CheckTop();
     }
 }
