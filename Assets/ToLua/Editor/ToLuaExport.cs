@@ -114,6 +114,8 @@ public static class ToLuaExport
 
     public static List<string> memberFilter = new List<string>
     {
+        "Task.IsCompletedSuccessfully",  // https://github.com/topameng/tolua/issues/210
+        
         "String.Chars",
         "Directory.SetAccessControl",
         "File.GetAccessControl",

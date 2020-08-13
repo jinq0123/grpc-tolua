@@ -82,6 +82,14 @@ end
 		_GT(typeof(Grpc.Core.ChannelCredentials)),
 	}
 	```
+1. Add in `Assets\ToLua\Editor\ToLuaExport.cs memberFilter`
+	```
+    public static List<string> memberFilter = new List<string>
+    {
+        "Task.IsCompletedSuccessfully",
+        ...
+	}
+	```
 1. Open `Assets\GrpcToLua\Examples\RouteGuide\RouteGuide.unity`
 1. Lua -> Generate All
 

@@ -163,8 +163,7 @@ public static class CustomSettings
         _GT(typeof(GrpcToLua.ServerStreamingCall)),
         _GT(typeof(GrpcToLua.DuplexStreamingCall)),
         _GT(typeof(System.Runtime.CompilerServices.TaskAwaiter<LuaInterface.LuaTable>)),
-        _GT(typeof(System.Threading.Tasks.Task)),
-        // _GT(typeof(System.Threading.Tasks.Task<LuaInterface.LuaTable>)),
+        _GT(typeof(System.Threading.Tasks.Task<LuaInterface.LuaTable>)),
     };
 
     public static List<Type> dynamicList = new List<Type>()
