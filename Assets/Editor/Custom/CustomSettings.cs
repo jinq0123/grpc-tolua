@@ -158,6 +158,7 @@ public static class CustomSettings
         _GT(typeof(Grpc.Core.AsyncUnaryCall<LuaInterface.LuaTable>)),
         _GT(typeof(GrpcToLua.InsecureCredentials)),
         _GT(typeof(GrpcToLua.Client)),
+        _GT(typeof(GrpcToLua.DescriptorSetLoader)),
         // TODO del _GT(typeof(GrpcToLua.UnaryCall)),
         _GT(typeof(GrpcToLua.ClientStreamingCall)),
         _GT(typeof(GrpcToLua.ServerStreamingCall)),
