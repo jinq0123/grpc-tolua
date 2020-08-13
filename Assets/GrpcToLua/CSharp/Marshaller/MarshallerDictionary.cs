@@ -29,13 +29,18 @@ namespace GrpcToLua
         static private byte[] Serialize(string requestTypeName, LuaTable request)
         {
             // TODO
-            return new byte[]{};
+            var msg = new Routeguide.Point();
+            msg.Latitude = 12345;
+            return global::Google.Protobuf.MessageExtensions.ToByteArray(msg);
         }
         
         static private LuaTable Deserialize(string responseTypeName, byte[] responseBuf)
         {
             // TODO
-            return LuaState.Get(IntPtr.Zero).NewTable();
+            var feature = global::Routeguide.Feature.Parser.ParseFrom(responseBuf);
+            var ret = LuaState.Get(IntPtr.Zero).NewTable();
+            ret["name"] = feature.Name;
+            return ret;
         }
     }
 }
