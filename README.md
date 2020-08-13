@@ -69,6 +69,8 @@ end
 
 1. Update to the latest tolua
 	* Copy Assets, Unity5.x, Luajit64, Luajit from tolua
+	* Copy `coroutine.wait_until(conditionFunc, co)` from https://github.com/woshihuo12/tolua
+		+ See commit 441d9f
 1. Update grpc_unity_package
 	* https://github.com/grpc/grpc/tree/master/src/csharp/experimental#unity
 1. Add in `Assets\Editor\Custom\CustomSetting.cs customTypeList`
@@ -90,5 +92,5 @@ Make sure to add lua search path like this:
 ```
     lua = new LuaState();
     LuaFileUtils.Instance.AddSearchPath(Application.dataPath + "/GrpcToLua/Lua/?/init.lua");
-    // TODO lua.AddSearchPath(Application.dataPath + "/GrpcToLua/Lua");
+    lua.AddSearchPath(Application.dataPath + "/GrpcToLua/Lua");
 ```
