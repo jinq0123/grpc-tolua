@@ -12,7 +12,7 @@ local function construct(self, channel, service_name)
     setmetatable(clt, Client)
 
     -- initialize
-    clt.client = GrpcToLua.Client.New(channel, service_name)
+    clt.client = GrpcToLua.Client(channel, service_name)
     return clt
 end
 
