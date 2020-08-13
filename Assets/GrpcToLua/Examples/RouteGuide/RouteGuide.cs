@@ -129,7 +129,8 @@ public class RouteGuide : MonoBehaviour
         {
             return;
         }
-        
+
+        tips = "";
         LuaFunction func = lua.GetFunction(funcName);
         func.Call();
         func.Dispose();
