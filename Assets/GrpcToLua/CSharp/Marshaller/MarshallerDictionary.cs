@@ -29,13 +29,13 @@ namespace GrpcToLua
         static private byte[] Serialize(string requestTypeName, LuaTable request)
         {
             // TODO
-            return null;
+            return new byte[]{};
         }
         
         static private LuaTable Deserialize(string responseTypeName, byte[] responseBuf)
         {
             // TODO
-            return null;
+            return LuaState.Get(IntPtr.Zero).NewTable();
         }
     }
 }
