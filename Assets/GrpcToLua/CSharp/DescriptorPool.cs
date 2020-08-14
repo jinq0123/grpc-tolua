@@ -32,6 +32,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using gpr = global::Google.Protobuf.Reflection;
@@ -40,156 +41,84 @@ namespace GrpcToLua
 {
     using IDescriptor = gpr.IDescriptor;
     using FileDescriptor = gpr.FileDescriptor;
-    using FieldDescriptor = gpr.FieldDescriptor;
     using MessageDescriptor = gpr.MessageDescriptor;
+    using MethodDescriptor = gpr.MethodDescriptor;
+    using ServiceDescriptor = gpr.ServiceDescriptor;
 
     /// <summary>
     /// Contains lookup tables containing all the descriptors.
     /// </summary>
-    internal sealed class DescriptorPool
+    sealed class DescriptorPool
     {
-        private static readonly IDictionary<string, IDescriptor> descriptorsByName =
-            new Dictionary<string, IDescriptor>();
+        private static readonly IDictionary<string, MessageDescriptor> messages =
+            new Dictionary<string, MessageDescriptor>();
+        private static readonly IDictionary<string, MethodDescriptor> methods =
+            new Dictionary<string, MethodDescriptor>();
 
-        /* DEL
-        private readonly IDictionary<ObjectIntPair<IDescriptor>, FieldDescriptor> fieldsByNumber =
-            new Dictionary<ObjectIntPair<IDescriptor>, FieldDescriptor>();
-
-        private readonly IDictionary<ObjectIntPair<IDescriptor>, EnumValueDescriptor> enumValuesByNumber =
-            new Dictionary<ObjectIntPair<IDescriptor>, EnumValueDescriptor>(); */
-
-        private static readonly HashSet<FileDescriptor> dependencies =
+        private static readonly HashSet<FileDescriptor> files =
             new HashSet<FileDescriptor>();
 
-        /* DEL
-        internal DescriptorPool(IEnumerable<FileDescriptor> dependencyFiles)
-        {
-            foreach (var dependencyFile in dependencyFiles)
-            {
-                dependencies.Add(dependencyFile);
-                ImportPublicDependencies(dependencyFile);
-            }
-
-            foreach (FileDescriptor dependency in dependencyFiles)
-            {
-                AddPackage(dependency.Package, dependency);
-            }
-        } */
-
-        private static void ImportPublicDependencies(FileDescriptor file)
-        {
-            foreach (FileDescriptor dependency in file.PublicDependencies)
-            {
-                if (dependencies.Add(dependency))
-                {
-                    ImportPublicDependencies(dependency);
-                }
-            }
-        }
-
         /// <summary>
-        /// Finds a symbol of the given name within the pool.
+        /// Finds a message of the given name within the pool.
         /// </summary>
-        /// <typeparam name="T">The type of symbol to look for</typeparam>
         /// <param name="fullName">Fully-qualified name to look up</param>
-        /// <returns>The symbol with the given name and type,
-        /// or null if the symbol doesn't exist or has the wrong type</returns>
-        internal static T FindSymbol<T>(string fullName) where T : class
+        /// <returns>The message with the given name, or null if doesn't exist</returns>
+        public static MessageDescriptor FindMessage(string fullName)
         {
-            IDescriptor result;
-            descriptorsByName.TryGetValue(fullName, out result);
-            T descriptor = result as T;
-            if (descriptor != null)
-            {
-                return descriptor;
-            }
-
-            /* DEL
-            // dependencies contains direct dependencies and any *public* dependencies
-            // of those dependencies (transitively)... so we don't need to recurse here.
-            foreach (FileDescriptor dependency in dependencies)
-            {
-                dependency.DescriptorPool.descriptorsByName.TryGetValue(fullName, out result);
-                descriptor = result as T;
-                if (descriptor != null)
-                {
-                    return descriptor;
-                }
-            } */
-
-            return null;
+            MessageDescriptor result;
+            messages.TryGetValue(fullName, out result);
+            return result;
         }
 
-        /* DEL
         /// <summary>
-        /// Adds a package to the symbol tables. If a package by the same name
-        /// already exists, that is fine, but if some other kind of symbol
-        /// exists under the same name, an exception is thrown. If the package
-        /// has multiple components, this also adds the parent package(s).
+        /// Finds a method of the given name within the pool.
         /// </summary>
-        internal void AddPackage(string fullName, FileDescriptor file)
+        /// <param name="fullName">Fully-qualified name to look up</param>
+        /// <returns>The method with the given name, or null if doesn't exist</returns>
+        public static MethodDescriptor FindMethod(string fullName)
         {
-            int dotpos = fullName.LastIndexOf('.');
-            String name;
-            if (dotpos != -1)
-            {
-                AddPackage(fullName.Substring(0, dotpos), file);
-                name = fullName.Substring(dotpos + 1);
-            }
-            else
-            {
-                name = fullName;
-            }
-
-            IDescriptor old;
-            if (descriptorsByName.TryGetValue(fullName, out old))
-            {
-                if (!(old is PackageDescriptor))
-                {
-                    throw new DescriptorValidationException(file,
-                                                            "\"" + name +
-                                                            "\" is already defined (as something other than a " +
-                                                            "package) in file \"" + old.File.Name + "\".");
-                }
-            }
-            descriptorsByName[fullName] = new PackageDescriptor(name, fullName, file);
-        } */
+            MethodDescriptor result;
+            methods.TryGetValue(fullName, out result);
+            return result;
+        }
 
         /// <summary>
-        /// Adds a symbol to the symbol table.
+        /// Adds a file descriptor.
         /// </summary>
-        /// <exception cref="DescriptorValidationException">The symbol already existed
-        /// in the symbol table.</exception>
-        internal static void AddSymbol(IDescriptor descriptor)
+        public static void AddFileDescriptor(FileDescriptor descriptor)
         {
             ValidateSymbolName(descriptor);
-            String fullName = descriptor.FullName;
+            VerifyDependencies(descriptor);
+            files.Add(descriptor);  // ignore old
+            descriptor.Services.Select((s) => { AddServiceDescriptor(s); return 0; });
+            descriptor.MessageTypes.Select((m) => { AddMessageDescriptor(m); return 0; });
+        }
 
-            // TODO: allow add again?
-            IDescriptor old;
-            if (descriptorsByName.TryGetValue(fullName, out old))
-            {
-                int dotPos = fullName.LastIndexOf('.');
-                string message;
-                if (descriptor.File == old.File)
-                {
-                    if (dotPos == -1)
-                    {
-                        message = "\"" + fullName + "\" is already defined.";
-                    }
-                    else
-                    {
-                        message = "\"" + fullName.Substring(dotPos + 1) + "\" is already defined in \"" +
-                                  fullName.Substring(0, dotPos) + "\".";
-                    }
-                }
-                else
-                {
-                    message = "\"" + fullName + "\" is already defined in file \"" + old.File.Name + "\".";
-                }
-                throw new Exception(message);
-            }
-            descriptorsByName[fullName] = descriptor;
+        /// <summary>
+        /// Adds a service descriptor.
+        /// </summary>
+        public static void AddServiceDescriptor(ServiceDescriptor descriptor)
+        {
+            ValidateSymbolName(descriptor);
+            descriptor.Methods.Select((m) => { AddMethodDescriptor(m); return 0; });
+        }
+
+        /// <summary>
+        /// Adds a methos descriptor.
+        /// </summary>
+        public static void AddMethodDescriptor(MethodDescriptor descriptor)
+        {
+            ValidateSymbolName(descriptor);
+            methods[descriptor.FullName] = descriptor;
+        }
+
+        /// <summary>
+        /// Adds a message descriptor.
+        /// </summary>
+        public static void AddMessageDescriptor(MessageDescriptor descriptor)
+        {
+            ValidateSymbolName(descriptor);
+            messages[descriptor.FullName] = descriptor;
         }
 
         private static readonly RegexOptions CompiledRegexWhereAvailable =
@@ -214,135 +143,17 @@ namespace GrpcToLua
             }
         }
 
-        /* DEL
-        /// <summary>
-        /// Returns the field with the given number in the given descriptor,
-        /// or null if it can't be found.
-        /// </summary>
-        internal FieldDescriptor FindFieldByNumber(MessageDescriptor messageDescriptor, int number)
+        // Dependencies must be all here already.
+        private static void VerifyDependencies(FileDescriptor file)
         {
-            FieldDescriptor ret;
-            fieldsByNumber.TryGetValue(new ObjectIntPair<IDescriptor>(messageDescriptor, number), out ret);
-            return ret;
-        }
-
-        internal EnumValueDescriptor FindEnumValueByNumber(EnumDescriptor enumDescriptor, int number)
-        {
-            EnumValueDescriptor ret;
-            enumValuesByNumber.TryGetValue(new ObjectIntPair<IDescriptor>(enumDescriptor, number), out ret);
-            return ret;
-        }
-
-        /// <summary>
-        /// Adds a field to the fieldsByNumber table.
-        /// </summary>
-        /// <exception cref="DescriptorValidationException">A field with the same
-        /// containing type and number already exists.</exception>
-        internal void AddFieldByNumber(FieldDescriptor field)
-        {
-            // for extensions, we use the extended type, otherwise we use the containing type
-            ObjectIntPair<IDescriptor> key = new ObjectIntPair<IDescriptor>(field.Proto.HasExtendee ? field.ExtendeeType : field.ContainingType, field.FieldNumber);
-            FieldDescriptor old;
-            if (fieldsByNumber.TryGetValue(key, out old))
+            foreach (FileDescriptor dependency in file.Dependencies)
             {
-                throw new DescriptorValidationException(field, "Field number " + field.FieldNumber +
-                                                               "has already been used in \"" +
-                                                               field.ContainingType.FullName +
-                                                               "\" by field \"" + old.Name + "\".");
-            }
-            fieldsByNumber[key] = field;
-        }
-
-        /// <summary>
-        /// Adds an enum value to the enumValuesByNumber table. If an enum value
-        /// with the same type and number already exists, this method does nothing.
-        /// (This is allowed; the first value defined with the number takes precedence.)
-        /// </summary>
-        internal void AddEnumValueByNumber(EnumValueDescriptor enumValue)
-        {
-            ObjectIntPair<IDescriptor> key = new ObjectIntPair<IDescriptor>(enumValue.EnumDescriptor, enumValue.Number);
-            if (!enumValuesByNumber.ContainsKey(key))
-            {
-                enumValuesByNumber[key] = enumValue;
-            }
-        }
-        */
-
-        /// <summary>
-        /// Looks up a descriptor by name, relative to some other descriptor.
-        /// The name may be fully-qualified (with a leading '.'), partially-qualified,
-        /// or unqualified. C++-like name lookup semantics are used to search for the
-        /// matching descriptor.
-        /// </summary>
-        /// <remarks>
-        /// This isn't heavily optimized, but it's only used during cross linking anyway.
-        /// If it starts being used more widely, we should look at performance more carefully.
-        /// </remarks>
-        internal static IDescriptor LookupSymbol(string name, IDescriptor relativeTo)
-        {
-            IDescriptor result;
-            if (name.StartsWith("."))
-            {
-                // Fully-qualified name.
-                result = FindSymbol<IDescriptor>(name.Substring(1));
-            }
-            else
-            {
-                // If "name" is a compound identifier, we want to search for the
-                // first component of it, then search within it for the rest.
-                int firstPartLength = name.IndexOf('.');
-                string firstPart = firstPartLength == -1 ? name : name.Substring(0, firstPartLength);
-
-                // We will search each parent scope of "relativeTo" looking for the
-                // symbol.
-                StringBuilder scopeToTry = new StringBuilder(relativeTo.FullName);
-
-                while (true)
+                if (files.Add(dependency))
                 {
-                    // Chop off the last component of the scope.
-
-                    int dotpos = scopeToTry.ToString().LastIndexOf(".");
-                    if (dotpos == -1)
-                    {
-                        result = FindSymbol<IDescriptor>(name);
-                        break;
-                    }
-                    else
-                    {
-                        scopeToTry.Length = dotpos + 1;
-
-                        // Append firstPart and try to find.
-                        scopeToTry.Append(firstPart);
-                        result = FindSymbol<IDescriptor>(scopeToTry.ToString());
-
-                        if (result != null)
-                        {
-                            if (firstPartLength != -1)
-                            {
-                                // We only found the first part of the symbol.  Now look for
-                                // the whole thing.  If this fails, we *don't* want to keep
-                                // searching parent scopes.
-                                scopeToTry.Length = dotpos + 1;
-                                scopeToTry.Append(name);
-                                result = FindSymbol<IDescriptor>(scopeToTry.ToString());
-                            }
-                            break;
-                        }
-
-                        // Not found.  Remove the name so we can try again.
-                        scopeToTry.Length = dotpos;
-                    }
+                    throw new Exception("Dependency \"" + dependency.Name + "\" is not found.");
                 }
             }
-
-            if (result == null)
-            {
-                throw new Exception("\"" + name + "\" is not defined.");
-            }
-            else
-            {
-                return result;
-            }
         }
-    }
-}
+    }  // class DescriptorPool
+}  // namespace GrpcToLua
+

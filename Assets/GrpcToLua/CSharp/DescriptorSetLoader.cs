@@ -18,7 +18,7 @@ namespace GrpcToLua
     //
     // If cs code is generated from proto file, you can get Descriptor
     //   from the generated Reflection class and add to pool dirctly:
-    //   DescriptorPool.AddSymbol(MyPackage.MyReflection.Descriptor);
+    //   DescriptorPool.AddFileDescriptor(MyPackage.MyReflection.Descriptor);
     public static class DescriptorSetLoader
     {
         public static void LoadFromFile(string filePath)
@@ -49,7 +49,7 @@ namespace GrpcToLua
         {
             var byteStrings = descriptorSet.File.Select(f => f.ToByteString()).ToList();
             var descriptors = FileDescriptor.BuildFromByteStrings(byteStrings);
-            descriptors.Select(d => { DescriptorPool.AddSymbol(d); return 0; });
+            descriptors.Select(d => { DescriptorPool.AddFileDescriptor(d); return 0; });
         }
     }  // class DescriptorSetLoader
 }  // namespace GrpcToLua
