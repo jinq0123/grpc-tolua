@@ -34,7 +34,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-using gpr = Google.Protobuf.Reflection;
+using gpr = global::Google.Protobuf.Reflection;
 
 namespace GrpcToLua
 {
@@ -162,7 +162,7 @@ namespace GrpcToLua
         /// in the symbol table.</exception>
         internal static void AddSymbol(IDescriptor descriptor)
         {
-            // ValidateSymbolName(descriptor);
+            ValidateSymbolName(descriptor);
             String fullName = descriptor.FullName;
 
             IDescriptor old;
