@@ -9,79 +9,25 @@ public class RouteGuide : MonoBehaviour
     private LuaState lua = null;
     private LuaLooper looper = null;
 
-    string script = @"
-        local grpctolua = require('grpctolua')
-        local channel = grpctolua.new_channel('localhost:50052')
-        local client = grpctolua.new_client(channel, 'routeguide.RouteGuide')
-
-        function TestGetFeature()
-            print('TestGetFeature')
-            coroutine.start(CoGetFeature)
-        end
-
-        function TestListFeatures()
-            print('TestListFeatures')
-            coroutine.start(CoListFeatures)
-        end
-
-        function TestRecordRoute()
-            print('TestRecordRoute')
-            coroutine.start(CoRecordRoute)
-        end
-
-        function TestRouteChat()
-            print('TestRouteChat')
-            coroutine.start(CoRouteChat)
-        end
-
-        function CoGetFeature()
-            print('CoGetFeature')
-            feature = client:call('GetFeature', GetPoint(409146138, -746188906))
-            print('feature: '..DumpTable(feature))
-        end
-
-        function CoListFeatures()
-            print('CoListFeatures')
-        end
-
-        function CoRecordRoute()
-            print('CoRecordRoute')
-        end
-
-        function CoRouteChat()
-            print('CoRouteChat')
-        end
-
-        function GetPoint(latitude, longitude)
-            return { Latitude = latitude, Longitude = longitude }
-        end
-
-        function DumpTable(t)
-            local s = '{'
-            for pos, val in pairs(t) do
-                s = s .. string.format('[%q] => %q, ', pos, val)
-            end
-            return s .. '}'
-        end
-    ";  // script
-
     void Awake () 
     {
 #if UNITY_5 || UNITY_2017 || UNITY_2018
         Application.logMessageReceived += ShowTips;
 #else
         Application.RegisterLogCallback(ShowTips);
-#endif        
+#endif
         new LuaResLoader();
         lua = new LuaState();
         lua.AddSearchPath(Application.dataPath + "/GrpcToLua/Lua");
         lua.Start();
         LuaBinder.Bind(lua);
-        DelegateFactory.Init();         
+        DelegateFactory.Init();
         looper = gameObject.AddComponent<LuaLooper>();
         looper.luaState = lua;
 
-        lua.DoString(script, "RouteGuide.cs");
+        string fullPath = Application.dataPath + "/GrpcToLua/Examples/RouteGuide";
+        lua.AddSearchPath(fullPath);
+        lua.Require("RouteGuide");  // RouteGuide.lua
     }
 
     void OnApplicationQuit()
