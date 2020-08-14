@@ -11,18 +11,18 @@ namespace GrpcToLua
     {
         static Dictionary<string, Marshaller> dict = new Dictionary<string, Marshaller>();
 
-        static public Marshaller GetMarshaller(string typeName)
+        static public Marshaller GetMarshaller(string typeFullName)
         {
             Marshaller result;
-            if (dict.TryGetValue(typeName, out result))
+            if (dict.TryGetValue(typeFullName, out result))
             {
                 return result;
             }
 
             var newMarshaller = grpc::Marshallers.Create(
-                (arg) => Serialize(typeName, arg),
-                (buf) => Deserialize(typeName, buf));
-            dict[typeName] = newMarshaller;
+                (arg) => Serialize(typeFullName, arg),
+                (buf) => Deserialize(typeFullName, buf));
+            dict[typeFullName] = newMarshaller;
             return newMarshaller;
         }
         

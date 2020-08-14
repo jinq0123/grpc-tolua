@@ -29,25 +29,24 @@ namespace GrpcToLua
                 return result;
             }
 
-            // TODO: GetServiceMethodRequestAndResponseTypeName(serviceName, methodName)
-            string requestTypeName = GetRequestTypeName(methodName);
-            string responseTypeName = GetResponseTypeName(methodName);
-            var requestMarshaller = MarshallerDictionary.GetMarshaller(requestTypeName);
-            var responseMarshaller = MarshallerDictionary.GetMarshaller(responseTypeName);
+            string requestTypeFullName = GetRequestTypeFullName(methodName);
+            string responseTypeFullName = GetResponseTypeFullName(methodName);
+            var requestMarshaller = MarshallerDictionary.GetMarshaller(requestTypeFullName);
+            var responseMarshaller = MarshallerDictionary.GetMarshaller(responseTypeFullName);
             var newMethod = new Method(methodType, serviceName, methodName, requestMarshaller, responseMarshaller);
             dict[methodName] = newMethod;
             return newMethod;
         }
 
-        public string GetRequestTypeName(string methodName)
+        public string GetRequestTypeFullName(string methodName)
         {
             var methodDesc = GetMethodDescriptor(methodName);
-            return methodDesc.InputType.Name;
+            return methodDesc.InputType.FullName;
         }
-        public string GetResponseTypeName(string methodName)
+        public string GetResponseTypeFullName(string methodName)
         {
             var methodDesc = GetMethodDescriptor(methodName);
-            return methodDesc.OutputType.Name;
+            return methodDesc.OutputType.FullName;
         }
 
         private MethodDescriptor GetMethodDescriptor(string methodName)
