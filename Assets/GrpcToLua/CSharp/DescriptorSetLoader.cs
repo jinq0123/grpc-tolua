@@ -47,9 +47,15 @@ namespace GrpcToLua
 
         public static void LoadDescriptorSet(FileDescriptorSet descriptorSet)
         {
+            UnityEngine.Debug.Log("LoadDescriptorSet");
             var byteStrings = descriptorSet.File.Select(f => f.ToByteString()).ToList();
+            UnityEngine.Debug.LogFormat("byteStrings count: {0}", byteStrings.Count);
             var descriptors = FileDescriptor.BuildFromByteStrings(byteStrings);
-            descriptors.Select(d => { DescriptorPool.AddFileDescriptor(d); return 0; });
+            UnityEngine.Debug.LogFormat("descriptors count: {0}", descriptors.Count);
+            foreach (var d in descriptors)
+            {
+                DescriptorPool.AddFileDescriptor(d);
+            }
         }
     }  // class DescriptorSetLoader
 }  // namespace GrpcToLua

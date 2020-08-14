@@ -1,6 +1,7 @@
 using LuaInterface;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 using grpc = global::Grpc.Core;
 
 namespace GrpcToLua
@@ -28,6 +29,7 @@ namespace GrpcToLua
         
         static private byte[] Serialize(string requestTypeName, LuaTable request)
         {
+            Debug.LogFormat("Sericalize: {0}", requestTypeName);
             // TODO
             var msg = new Routeguide.Point();
             msg.Latitude = 12345;
@@ -36,6 +38,7 @@ namespace GrpcToLua
         
         static private LuaTable Deserialize(string responseTypeName, byte[] responseBuf)
         {
+            Debug.LogFormat("Desericalize: {0}", responseTypeName);
             // TODO
             var feature = global::Routeguide.Feature.Parser.ParseFrom(responseBuf);
             var ret = LuaState.Get(IntPtr.Zero).NewTable();

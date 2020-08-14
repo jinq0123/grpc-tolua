@@ -32,7 +32,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using gpr = global::Google.Protobuf.Reflection;
@@ -87,11 +86,17 @@ namespace GrpcToLua
         /// </summary>
         public static void AddFileDescriptor(FileDescriptor descriptor)
         {
-            ValidateSymbolName(descriptor);
+            UnityEngine.Debug.Log("Add file descriptor: " + descriptor.Name);
             VerifyDependencies(descriptor);
             files.Add(descriptor);  // ignore old
-            descriptor.Services.Select((s) => { AddServiceDescriptor(s); return 0; });
-            descriptor.MessageTypes.Select((m) => { AddMessageDescriptor(m); return 0; });
+            foreach (var s in descriptor.Services)
+            {
+                AddServiceDescriptor(s);
+            }
+            foreach (var m in descriptor.MessageTypes)
+            {
+                AddMessageDescriptor(m);
+            }
         }
 
         /// <summary>
@@ -99,8 +104,12 @@ namespace GrpcToLua
         /// </summary>
         public static void AddServiceDescriptor(ServiceDescriptor descriptor)
         {
+            UnityEngine.Debug.Log("Add service: " + descriptor.FullName);
             ValidateSymbolName(descriptor);
-            descriptor.Methods.Select((m) => { AddMethodDescriptor(m); return 0; });
+            foreach (var m in descriptor.Methods)
+            {
+                AddMethodDescriptor(m);
+            }
         }
 
         /// <summary>
@@ -108,6 +117,7 @@ namespace GrpcToLua
         /// </summary>
         public static void AddMethodDescriptor(MethodDescriptor descriptor)
         {
+            UnityEngine.Debug.Log("Add method: " + descriptor.FullName);
             ValidateSymbolName(descriptor);
             methods[descriptor.FullName] = descriptor;
         }
@@ -117,6 +127,7 @@ namespace GrpcToLua
         /// </summary>
         public static void AddMessageDescriptor(MessageDescriptor descriptor)
         {
+            UnityEngine.Debug.Log("Add message: " + descriptor.FullName);
             ValidateSymbolName(descriptor);
             messages[descriptor.FullName] = descriptor;
         }
