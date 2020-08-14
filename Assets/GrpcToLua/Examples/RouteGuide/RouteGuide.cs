@@ -77,6 +77,11 @@ public class RouteGuide : MonoBehaviour
         }
 
         tips = "";
+        CallLuaFunc(funcName);
+    }
+
+    void CallLuaFunc(string funcName)
+    {
         LuaFunction func = lua.GetFunction(funcName);
         func.Call();
         func.Dispose();

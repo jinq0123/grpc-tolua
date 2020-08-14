@@ -1,8 +1,11 @@
 ﻿local grpctolua = require('grpctolua')
+
 local channel = grpctolua.new_channel('localhost:50052')
 local client = grpctolua.new_client(channel, 'routeguide.RouteGuide')
 
-print("RouteGuide.lua")
+local pb_file = UnityEngine.Application.dataPath .. '/GrpcToLua/Examples/RouteGuide/protos/route_guide.pb'
+print('load proto file descriptor set from: ' .. pb_file)
+grpctolua.load_descriptor_set_from_file(pb_file)
 
 function TestGetFeature()
     print('TestGetFeature')
