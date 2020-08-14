@@ -13,3 +13,5 @@ LuaLooper:Update() (at Assets/ToLua/Misc/LuaLooper.cs:101)
 * Is lua.Collect() necessary?
 * Allow to add proto descriptor file in any order
 	+ Provide a method to verify all dependencies are added
+* include_imports
+	+ protoc --descriptor_set_out=out.pb --include_imports a.proto b.proto
