@@ -1,5 +1,6 @@
 # Todo
 
+* Check top warning
 ```
 10:30:21.428-919: Lua stack top is 3
 UnityEngine.Debug:LogWarning(Object)
@@ -10,3 +11,5 @@ LuaLooper:Update() (at Assets/ToLua/Misc/LuaLooper.cs:101)
 ```
 
 * Is lua.Collect() necessary?
+* Allow to add proto descriptor file in any order
+	+ Provide a method to verify all dependencies are added
