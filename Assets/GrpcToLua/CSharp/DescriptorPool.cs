@@ -165,6 +165,7 @@ namespace GrpcToLua
             ValidateSymbolName(descriptor);
             String fullName = descriptor.FullName;
 
+            // TODO: allow add again?
             IDescriptor old;
             if (descriptorsByName.TryGetValue(fullName, out old))
             {
