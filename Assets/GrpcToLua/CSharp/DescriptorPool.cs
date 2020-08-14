@@ -86,7 +86,7 @@ namespace GrpcToLua
         /// </summary>
         public static void AddFileDescriptor(FileDescriptor descriptor)
         {
-            UnityEngine.Debug.Log("Add file descriptor: " + descriptor.Name);
+            // UnityEngine.Debug.Log("Add file descriptor: " + descriptor.Name);
             VerifyDependencies(descriptor);
             files.Add(descriptor);  // ignore old
             foreach (var s in descriptor.Services)
@@ -104,7 +104,7 @@ namespace GrpcToLua
         /// </summary>
         public static void AddServiceDescriptor(ServiceDescriptor descriptor)
         {
-            UnityEngine.Debug.Log("Add service: " + descriptor.FullName);
+            // UnityEngine.Debug.Log("Add service: " + descriptor.FullName);
             ValidateSymbolName(descriptor);
             foreach (var m in descriptor.Methods)
             {
@@ -117,7 +117,7 @@ namespace GrpcToLua
         /// </summary>
         public static void AddMethodDescriptor(MethodDescriptor descriptor)
         {
-            UnityEngine.Debug.Log("Add method: " + descriptor.FullName);
+            // UnityEngine.Debug.Log("Add method: " + descriptor.FullName);
             ValidateSymbolName(descriptor);
             methods[descriptor.FullName] = descriptor;
         }
@@ -127,7 +127,7 @@ namespace GrpcToLua
         /// </summary>
         public static void AddMessageDescriptor(MessageDescriptor descriptor)
         {
-            UnityEngine.Debug.Log("Add message: " + descriptor.FullName);
+            // UnityEngine.Debug.Log("Add message: " + descriptor.FullName);
             ValidateSymbolName(descriptor);
             messages[descriptor.FullName] = descriptor;
         }

@@ -1,5 +1,4 @@
 using LuaInterface;
-using UnityEngine;
 using grpc = global::Grpc.Core;
 
 namespace GrpcToLua
@@ -51,7 +50,7 @@ namespace GrpcToLua
 
         public grpc::AsyncUnaryCall<LuaTable> UnaryCall(string methodName, LuaTable request)
         {
-            Debug.LogFormat("Client.UnaryCall(methodNaame={0}, request={1})", methodName, request);
+            UnityEngine.Debug.LogFormat("Client.UnaryCall(methodNaame={0}, request={1})", methodName, request);
 
             var method = unaryMethods.GetMethod(methodName);
             // TODO: input headers, deadline, cancellationToken
@@ -64,21 +63,21 @@ namespace GrpcToLua
         
         public ServerStreamingCall ServerStreamingCall(string methodName, LuaTable request)
         {
-            Debug.LogFormat("Client.ServerStreamingCall(methodNaame={0}, request={1})", methodName, request);
+            UnityEngine.Debug.LogFormat("Client.ServerStreamingCall(methodNaame={0}, request={1})", methodName, request);
             // TODO
             return new ServerStreamingCall();
         }
         
         public ClientStreamingCall ClientStreamingCall(string methodName, LuaTable request)
         {
-            Debug.LogFormat("Client.ClientStreamingCall(methodNaame={0}, request={1})", methodName, request);
+            UnityEngine.Debug.LogFormat("Client.ClientStreamingCall(methodNaame={0}, request={1})", methodName, request);
             // TODO
             return new ClientStreamingCall();
         }
         
         public DuplexStreamingCall DuplexStreamingCall(string methodName, LuaTable request)
         {
-            Debug.LogFormat("Client.DuplexStreamingCall(methodNaame={0}, request={1})", methodName, request);
+            UnityEngine.Debug.LogFormat("Client.DuplexStreamingCall(methodNaame={0}, request={1})", methodName, request);
             // TODO
             return new DuplexStreamingCall();
         }
