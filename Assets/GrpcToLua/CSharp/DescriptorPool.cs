@@ -34,28 +34,36 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using gpr = Google.Protobuf.Reflection;
 
-namespace Google.Protobuf.Reflection
+namespace GrpcToLua
 {
+    using IDescriptor = gpr.IDescriptor;
+    using FileDescriptor = gpr.FileDescriptor;
+    using FieldDescriptor = gpr.FieldDescriptor;
+    using MessageDescriptor = gpr.MessageDescriptor;
+
     /// <summary>
-    /// Contains lookup tables containing all the descriptors defined in a particular file.
+    /// Contains lookup tables containing all the descriptors.
     /// </summary>
     internal sealed class DescriptorPool
     {
-        private readonly IDictionary<string, IDescriptor> descriptorsByName =
+        private static readonly IDictionary<string, IDescriptor> descriptorsByName =
             new Dictionary<string, IDescriptor>();
 
+        /* DEL
         private readonly IDictionary<ObjectIntPair<IDescriptor>, FieldDescriptor> fieldsByNumber =
             new Dictionary<ObjectIntPair<IDescriptor>, FieldDescriptor>();
 
         private readonly IDictionary<ObjectIntPair<IDescriptor>, EnumValueDescriptor> enumValuesByNumber =
-            new Dictionary<ObjectIntPair<IDescriptor>, EnumValueDescriptor>();
+            new Dictionary<ObjectIntPair<IDescriptor>, EnumValueDescriptor>(); */
 
-        private readonly HashSet<FileDescriptor> dependencies;
+        private static readonly HashSet<FileDescriptor> dependencies =
+            new HashSet<FileDescriptor>();
 
+        /* DEL
         internal DescriptorPool(IEnumerable<FileDescriptor> dependencyFiles)
         {
-            dependencies = new HashSet<FileDescriptor>();
             foreach (var dependencyFile in dependencyFiles)
             {
                 dependencies.Add(dependencyFile);
@@ -66,9 +74,9 @@ namespace Google.Protobuf.Reflection
             {
                 AddPackage(dependency.Package, dependency);
             }
-        }
+        } */
 
-        private void ImportPublicDependencies(FileDescriptor file)
+        private static void ImportPublicDependencies(FileDescriptor file)
         {
             foreach (FileDescriptor dependency in file.PublicDependencies)
             {
@@ -86,7 +94,7 @@ namespace Google.Protobuf.Reflection
         /// <param name="fullName">Fully-qualified name to look up</param>
         /// <returns>The symbol with the given name and type,
         /// or null if the symbol doesn't exist or has the wrong type</returns>
-        internal T FindSymbol<T>(string fullName) where T : class
+        internal static T FindSymbol<T>(string fullName) where T : class
         {
             IDescriptor result;
             descriptorsByName.TryGetValue(fullName, out result);
@@ -96,6 +104,7 @@ namespace Google.Protobuf.Reflection
                 return descriptor;
             }
 
+            /* DEL
             // dependencies contains direct dependencies and any *public* dependencies
             // of those dependencies (transitively)... so we don't need to recurse here.
             foreach (FileDescriptor dependency in dependencies)
@@ -106,11 +115,12 @@ namespace Google.Protobuf.Reflection
                 {
                     return descriptor;
                 }
-            }
+            } */
 
             return null;
         }
 
+        /* DEL
         /// <summary>
         /// Adds a package to the symbol tables. If a package by the same name
         /// already exists, that is fine, but if some other kind of symbol
@@ -143,16 +153,16 @@ namespace Google.Protobuf.Reflection
                 }
             }
             descriptorsByName[fullName] = new PackageDescriptor(name, fullName, file);
-        }
+        } */
 
         /// <summary>
         /// Adds a symbol to the symbol table.
         /// </summary>
         /// <exception cref="DescriptorValidationException">The symbol already existed
         /// in the symbol table.</exception>
-        internal void AddSymbol(IDescriptor descriptor)
+        internal static void AddSymbol(IDescriptor descriptor)
         {
-            ValidateSymbolName(descriptor);
+            // ValidateSymbolName(descriptor);
             String fullName = descriptor.FullName;
 
             IDescriptor old;
@@ -176,13 +186,15 @@ namespace Google.Protobuf.Reflection
                 {
                     message = "\"" + fullName + "\" is already defined in file \"" + old.File.Name + "\".";
                 }
-                throw new DescriptorValidationException(descriptor, message);
+                throw new Exception(message);
             }
             descriptorsByName[fullName] = descriptor;
         }
 
+        private static readonly RegexOptions CompiledRegexWhereAvailable =
+            Enum.IsDefined(typeof(RegexOptions), 8) ? (RegexOptions)8 : RegexOptions.None;
         private static readonly Regex ValidationRegex = new Regex("^[_A-Za-z][_A-Za-z0-9]*$",
-                                                                  FrameworkPortability.CompiledRegexWhereAvailable);
+                                                                  CompiledRegexWhereAvailable);
 
         /// <summary>
         /// Verifies that the descriptor's name is valid (i.e. it contains
@@ -193,15 +205,15 @@ namespace Google.Protobuf.Reflection
         {
             if (descriptor.Name == "")
             {
-                throw new DescriptorValidationException(descriptor, "Missing name.");
+                throw new Exception("Missing name.");
             }
             if (!ValidationRegex.IsMatch(descriptor.Name))
             {
-                throw new DescriptorValidationException(descriptor,
-                                                        "\"" + descriptor.Name + "\" is not a valid identifier.");
+                throw new Exception("\"" + descriptor.Name + "\" is not a valid identifier.");
             }
         }
 
+        /* DEL
         /// <summary>
         /// Returns the field with the given number in the given descriptor,
         /// or null if it can't be found.
@@ -253,6 +265,7 @@ namespace Google.Protobuf.Reflection
                 enumValuesByNumber[key] = enumValue;
             }
         }
+        */
 
         /// <summary>
         /// Looks up a descriptor by name, relative to some other descriptor.
@@ -264,7 +277,7 @@ namespace Google.Protobuf.Reflection
         /// This isn't heavily optimized, but it's only used during cross linking anyway.
         /// If it starts being used more widely, we should look at performance more carefully.
         /// </remarks>
-        internal IDescriptor LookupSymbol(string name, IDescriptor relativeTo)
+        internal static IDescriptor LookupSymbol(string name, IDescriptor relativeTo)
         {
             IDescriptor result;
             if (name.StartsWith("."))
@@ -323,7 +336,7 @@ namespace Google.Protobuf.Reflection
 
             if (result == null)
             {
-                throw new DescriptorValidationException(relativeTo, "\"" + name + "\" is not defined.");
+                throw new Exception("\"" + name + "\" is not defined.");
             }
             else
             {
