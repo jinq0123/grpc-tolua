@@ -1,4 +1,5 @@
 using LuaInterface;
+using System.Collections;
 using System.IO;
 using gpr = global::Google.Protobuf.Reflection;
 using pb = Google.Protobuf;
@@ -29,11 +30,27 @@ namespace GrpcToLua
 
         public void WriteTo(pb::CodedOutputStream output)
         {
-            var dicTable = tbl.ToDictTable();
-            foreach (var item in dicTable)
+            LuaDictTable dicTable = tbl.ToDictTable();
+            foreach (DictionaryEntry item in dicTable)
             {
-                UnityEngine.Debug.LogFormat("±éÀútable:{0}--{1}", item.Key, item.Value);
+                object key = item.Key;
+                UnityEngine.Debug.LogFormat("table item: {0}({2})->{1}({3})", key, item.Value, key.GetType(), item.Value.GetType());
+                if (!(key is System.String))
+                {
+                    continue;
+                }
+                WriteFieldTo(key.ToString(), item.Value, output);
             }
+        }
+
+        private void WriteFieldTo(string fieldName, object value, pb::CodedOutputStream output)
+        {
+            gpr.FieldDescriptor fieldDesc = desc.FindFieldByName(fieldName);
+            if (fieldDesc == null)
+            {
+                return;
+            }
+            UnityEngine.Debug.LogFormat("field: {0} {1} {2}", fieldDesc.FieldNumber, fieldDesc.FullName, value);
             // TODO
         }
 

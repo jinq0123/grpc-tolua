@@ -48,7 +48,7 @@ function CoRouteChat()
 end
 
 function GetPoint(latitude, longitude)
-    return { Latitude = latitude, Longitude = longitude }
+    return { latitude = latitude, longitude = longitude, [123] = 456, [{1,2,3}] = "abc" }
 end
 
 function DumpTable(t)
