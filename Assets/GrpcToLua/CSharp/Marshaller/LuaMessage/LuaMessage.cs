@@ -48,6 +48,7 @@ namespace GrpcToLua
             gpr.FieldDescriptor fieldDesc = desc.FindFieldByName(fieldName);
             if (fieldDesc == null)
             {
+                // TODO: Warn if got unknown field. Disable warn if has DISABLE_PB_KNOWN_FIELD.
                 return;
             }
             UnityEngine.Debug.LogFormat("field: {0} {1} {2}", fieldDesc.FieldNumber, fieldDesc.FullName, value);
