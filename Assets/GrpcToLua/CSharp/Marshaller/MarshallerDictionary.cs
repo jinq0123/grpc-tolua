@@ -27,7 +27,7 @@ namespace GrpcToLua
             dict[typeFullName] = newMarshaller;
             return newMarshaller;
         }
-        
+
         static private byte[] Serialize(string requestTypeFullName, LuaTable request)
         {
             UnityEngine.Debug.LogFormat("Sericalize: {0}", requestTypeFullName);
@@ -35,27 +35,21 @@ namespace GrpcToLua
             if (msgDesc == null) {
                 throw new Exception("Can not serialize request type: " + requestTypeFullName);
             }
-            UnityEngine.Debug.LogFormat("msgDesc: {0}, ClrType: {1}", msgDesc, msgDesc.ClrType);
-            var msg = (pb.IMessage)Activator.CreateInstance(msgDesc.ClrType);
-
-            IList<gpr.FieldDescriptor> fields = msgDesc.Fields.InFieldNumberOrder();
-            for (int i = 0; i < fields.Count; i++)
-            {
-                gpr.FieldDescriptor fld = fields[i];
-                fld.Accessor.SetValue(msg, request[fld.Name]);
-            }
-            return global::Google.Protobuf.MessageExtensions.ToByteArray(msg);
+            var msg = new LuaMessage(msgDesc, request);
+            return msg.ToByteArray();
         }
 
         static private LuaTable Deserialize(string responseTypeFullName, byte[] responseBuf)
         {
             UnityEngine.Debug.LogFormat("Desericalize: {0}", responseTypeFullName);
-            // TODO
-            // IMessage message = (IMessage)Activator.CreateInstance(type);
-            // message.MergeFrom(input);
-            var feature = global::Routeguide.Feature.Parser.ParseFrom(responseBuf);
+            gpr.MessageDescriptor msgDesc = DescriptorPool.FindMessage(responseTypeFullName);
+            if (msgDesc == null)
+            {
+                throw new Exception("Can not deserialize response type: " + responseTypeFullName);
+            }
             var ret = LuaState.Get(IntPtr.Zero).NewTable();
-            ret["name"] = feature.Name;
+            var msg = new LuaMessage(msgDesc, ret);
+            msg.MergeFrom(responseBuf);
             return ret;
         }
     }
