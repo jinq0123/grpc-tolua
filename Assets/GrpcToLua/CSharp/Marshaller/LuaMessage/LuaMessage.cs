@@ -1,5 +1,7 @@
 using LuaInterface;
+using System.IO;
 using gpr = global::Google.Protobuf.Reflection;
+using pb = Google.Protobuf;
 
 namespace GrpcToLua
 {
@@ -16,12 +18,33 @@ namespace GrpcToLua
             this.tbl = tbl;
         }
 
+        // Serialize
         public byte[] ToByteArray()
         {
-            return null;  // TODO
+            MemoryStream ms = new MemoryStream();
+            pb.CodedOutputStream output = new pb.CodedOutputStream(ms);
+            WriteTo(output);
+            return ms.GetBuffer();
         }
 
-        public void MergeFrom(byte[] buf)
+        public void WriteTo(pb::CodedOutputStream output)
+        {
+            var dicTable = tbl.ToDictTable();
+            foreach (var item in dicTable)
+            {
+                UnityEngine.Debug.LogFormat("±éÀútable:{0}--{1}", item.Key, item.Value);
+            }
+            // TODO
+        }
+
+        // Deserialize
+        public void MergeFrom(byte[] data)
+        {
+            pb.CodedInputStream input = new pb.CodedInputStream(data);
+            MergeFrom(input);
+        }
+
+        public void MergeFrom(pb.CodedInputStream input)
         {
             // TODO
         }
