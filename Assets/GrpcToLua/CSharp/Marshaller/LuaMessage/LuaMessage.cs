@@ -51,14 +51,25 @@ namespace GrpcToLua
                 // TODO: Warn if got unknown field. Disable warn if has DISABLE_PB_KNOWN_FIELD.
                 return;
             }
-            UnityEngine.Debug.LogFormat("field: {0} {1} repeated:{2} {3} {4}",
-                fieldDesc.FieldNumber, fieldDesc.FullName, fieldDesc.IsRepeated, fieldDesc.FieldType, value);
+            int fieldNumber = fieldDesc.FieldNumber;
+            gpr.FieldType fieldType = fieldDesc.FieldType;
+            UnityEngine.Debug.LogFormat("field: ({0}){1} repeated:{2} type:{3} value:{4}",
+                fieldNumber, fieldDesc.FullName, fieldDesc.IsRepeated, fieldType, value);
             if (fieldDesc.IsRepeated)
             {
-                // TODO
+                WriteRepeatedFieldTo(fieldNumber, fieldType, value as LuaTable, output);
                 return;
             }
-            WriteFieldTo(fieldDesc.FieldNumber, fieldDesc.FieldType, value, output);
+            WriteFieldTo(fieldNumber, fieldType, value, output);
+        }
+
+        private void WriteRepeatedFieldTo(int fieldNumber, gpr.FieldType fieldType, LuaTable values, pb::CodedOutputStream output)
+        {
+            UnityEngine.Debug.LogFormat("WriteRepeatedFiledTo()");
+            if (values == null) {
+                return;
+            }
+            // TODO
         }
 
         private void WriteFieldTo(int fieldNumber, gpr.FieldType fieldType, object value, pb::CodedOutputStream output)
