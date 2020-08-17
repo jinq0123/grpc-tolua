@@ -22,7 +22,7 @@ setmetatable(Client, {__call = construct})
 function Client:call(method_name, request)
     print(string.format("Client:call(method_name=%q, request=%q)", method_name, request))
     -- TODO
-    methodInfo = assert(GrpcToLua.GetMethodInfo(method_name))
+    methodInfo = assert(self.client:GetMethodInfo(method_name))
     request_data = pb.encode(methodInfo.input_type, request)
     call = self.client:UnaryCall(method_name, request_data)
     await(call)
