@@ -21,19 +21,19 @@ setmetatable(Client, {__call = construct})
 
 function Client:call(method_name, request)
     print(string.format("Client:call(method_name=%q, request=%q)", method_name, request))
-    -- TODO
-    methodInfo = assert(self.client:GetMethodInfo(method_name))
-    request_data = pb.encode(methodInfo.input_type, request)
-    call = self.client:UnaryCall(method_name, request_data)
+    local methodInfo = assert(self.client:GetMethodInfo(method_name))
+    local request_data = pb.encode(methodInfo.input_type, request)
+    local call = self.client:UnaryCall(method_name, request_data)
     await(call)
     print(string.format("call: %q(%s)", call, type(call)))
-    status = call:GetStatus()
+    local status = call:GetStatus()
     print(string.format("status: %q(%s)", status, type(status)))
-    resp = call.ResponseAsync
+    local resp = call.ResponseAsync
     print(string.format("resp: %q(%s)", resp, type(resp)))
-    result = resp.Result
-    print(string.format("resp: %q(%s)", result, type(result)))
-    return result
+    local result = resp.Result
+    print(string.format("result: %q(%s)", result, type(result)))
+    local respMsg = pb.decode(methodInfo.output_type, tolua.tolstring(result))
+    return respMsg
 end
 
 return Client
