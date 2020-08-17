@@ -2,9 +2,12 @@ using LuaInterface;
 using System;
 using System.Threading;
 using grpc = Grpc.Core;
+using gpr = Google.Protobuf.Reflection;
 
 namespace GrpcToLua
 {
+    using MethodDescriptor = gpr::MethodDescriptor;
+
     public class Client : grpc::ClientBase<Client>
     {
         readonly string serviceName;
@@ -50,7 +53,32 @@ namespace GrpcToLua
             duplexStreamingMethods = new MethodDictionary(serviceName, grpc.MethodType.DuplexStreaming);
         }
 
-        public grpc::AsyncUnaryCall<LuaTable> UnaryCall(string methodName, LuaTable request)
+        public LuaTable GetMethodInfo(string methodName)
+        {
+            var desc = GetMethodDescriptor(methodName);
+            if (desc == null) {
+                return null;
+            }
+            var info = LuaState.Get(IntPtr.Zero).NewTable();
+            info["input_type"] = desc.InputType.FullName;
+            info["output_type"] = desc.OutputType.FullName;
+            info["is_client_streaming"] = desc.IsClientStreaming;
+            info["is_server_streaming"] = desc.IsServerStreaming;
+            return info;
+        }
+
+        private MethodDescriptor GetMethodDescriptor(string methodName)
+        {
+            string fullName = GetMethodFullName(methodName);
+            return DescriptorPool.FindMethod(fullName);
+        }
+
+        private string GetMethodFullName(string methodName)
+        {
+            return serviceName + "." + methodName;
+        }
+
+        public grpc::AsyncUnaryCall<string> UnaryCall(string methodName, string request)
         {
             UnityEngine.Debug.LogFormat("Client.UnaryCall(methodNaame={0}, request={1})", methodName, request);
 
@@ -62,7 +90,7 @@ namespace GrpcToLua
             var options = new grpc::CallOptions(headers, deadline, cancellationToken);
             return CallInvoker.AsyncUnaryCall(method, null, options, request);
         }
-        
+
         public ServerStreamingCall ServerStreamingCall(string methodName, LuaTable request)
         {
             UnityEngine.Debug.LogFormat("Client.ServerStreamingCall(methodNaame={0}, request={1})", methodName, request);

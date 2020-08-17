@@ -6,14 +6,22 @@ using System;
 
 namespace GrpcToLua
 {
-    using Method = grpc::Method<LuaTable, LuaTable>;
-    using MethodDescriptor = gpr::MethodDescriptor;
+    // grpc request and response both are string. Lua serializes and deserializes.
+    using Method = grpc::Method<string, string>;
+    // using MethodDescriptor = gpr::MethodDescriptor;
+    using Marshaller = grpc::Marshaller<string>;
 
+    // MethodDictionary maps from method name to Method instance
     public class MethodDictionary
     {
         readonly string serviceName;
         readonly grpc::MethodType methodType;
-        Dictionary<string, Method> dict = new Dictionary<string, Method>();
+        readonly Dictionary<string, Method> dict = new Dictionary<string, Method>();
+
+        static readonly Marshaller marshaller = grpc::Marshallers.Create(
+                System.Text.Encoding.ASCII.GetBytes,
+                System.Text.Encoding.ASCII.GetString
+            );
 
         public MethodDictionary(string serviceName, grpc::MethodType methodType)
         {
@@ -29,38 +37,9 @@ namespace GrpcToLua
                 return result;
             }
 
-            string requestTypeFullName = GetRequestTypeFullName(methodName);
-            string responseTypeFullName = GetResponseTypeFullName(methodName);
-            var requestMarshaller = MarshallerDictionary.GetMarshaller(requestTypeFullName);
-            var responseMarshaller = MarshallerDictionary.GetMarshaller(responseTypeFullName);
-            var newMethod = new Method(methodType, serviceName, methodName, requestMarshaller, responseMarshaller);
+            var newMethod = new Method(methodType, serviceName, methodName, marshaller, marshaller);
             dict[methodName] = newMethod;
             return newMethod;
-        }
-
-        public string GetRequestTypeFullName(string methodName)
-        {
-            var methodDesc = GetMethodDescriptor(methodName);
-            return methodDesc.InputType.FullName;
-        }
-        public string GetResponseTypeFullName(string methodName)
-        {
-            var methodDesc = GetMethodDescriptor(methodName);
-            return methodDesc.OutputType.FullName;
-        }
-
-        private MethodDescriptor GetMethodDescriptor(string methodName)
-        {
-            string fullName = GetMethodFullName(methodName);
-            var methodDesc = DescriptorPool.FindMethod(fullName);
-            if (methodDesc != null)
-                return methodDesc;
-            throw new Exception("No method: " + fullName);
-        }
-
-        private string GetMethodFullName(string methodName)
-        {
-            return serviceName + "." + methodName;
         }
     }  // class MethodDictionary
 }  // namespace GrpcToLua
