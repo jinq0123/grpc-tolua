@@ -1,6 +1,9 @@
 using Google.Protobuf;
+using LuaInterface;
+using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using gpr = Google.Protobuf.Reflection;
 
 namespace GrpcToLua
@@ -29,21 +32,26 @@ namespace GrpcToLua
             }
         }
 
-        public static void LoadFromString(string s)
+        public static void LoadFromLuaByteBuffer(LuaByteBuffer buf)
         {
-            byte[] byteArray = System.Text.Encoding.ASCII.GetBytes(s);
-            // UnityEngine.Debug.LogFormat("s: {0}, bytes: {1}", s.Length, byteArray.Length);
-            LoadFromBuf(byteArray);
+            LoadFromBuf(buf.buffer);
         }
 
         public static void LoadFromStream(Stream stream)
         {
-            LoadDescriptorSet(FileDescriptorSet.Parser.ParseFrom(stream));
+            long n = stream.Length;
+            byte[] bytes = new byte[n];
+            stream.Read(bytes, 0, (int)n);
+            LoadFromBuf(bytes);
+
+            // UnityEngine.Debug.LogFormat("LoadFromStream(stream length={0})", stream.Length);
+            // LoadDescriptorSet(FileDescriptorSet.Parser.ParseFrom(stream));
         }
 
         public static void LoadFromBuf(byte[] buf)
         {
-            // UnityEngine.Debug.LogFormat("LoadFromBuf(byte[] buf={0}bytes)", buf.Length);
+            UnityEngine.Debug.LogFormat("LoadFromBuf(byte[] buf={0}bytes)", buf.Length);
+            UnityEngine.Debug.LogFormat("buf: {0}", System.BitConverter.ToString(buf));
             LoadDescriptorSet(FileDescriptorSet.Parser.ParseFrom(buf));
         }
 
