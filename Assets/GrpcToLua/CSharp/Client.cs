@@ -1,5 +1,7 @@
 using LuaInterface;
-using grpc = global::Grpc.Core;
+using System;
+using System.Threading;
+using grpc = Grpc.Core;
 
 namespace GrpcToLua
 {
@@ -55,8 +57,8 @@ namespace GrpcToLua
             var method = unaryMethods.GetMethod(methodName);
             // TODO: input headers, deadline, cancellationToken
             grpc::Metadata headers = null;
-            global::System.DateTime? deadline = null;
-            global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken);
+            DateTime? deadline = null;
+            CancellationToken cancellationToken = default(CancellationToken);
             var options = new grpc::CallOptions(headers, deadline, cancellationToken);
             return CallInvoker.AsyncUnaryCall(method, null, options, request);
         }

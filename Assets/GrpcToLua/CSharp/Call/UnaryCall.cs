@@ -1,4 +1,4 @@
-using grpc = global::Grpc.Core;
+using grpc = Grpc.Core;
 
 namespace GrpcToLua
 {

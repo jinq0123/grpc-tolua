@@ -1,7 +1,7 @@
 using LuaInterface;
 using System.Collections.Generic;
-using grpc = global::Grpc.Core;
-using gpr = global::Google.Protobuf.Reflection;
+using grpc = Grpc.Core;
+using gpr = Google.Protobuf.Reflection;
 using System;
 
 namespace GrpcToLua

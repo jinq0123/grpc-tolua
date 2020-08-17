@@ -34,7 +34,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-using gpr = global::Google.Protobuf.Reflection;
+using gpr = Google.Protobuf.Reflection;
 
 namespace GrpcToLua
 {
