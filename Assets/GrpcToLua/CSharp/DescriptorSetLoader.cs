@@ -32,18 +32,18 @@ namespace GrpcToLua
 
         public static void LoadFromLuaByteBuffer(LuaByteBuffer buf)
         {
-            LoadFromBuf(buf.buffer);
+            LoadFromBuffer(buf.buffer);
         }
 
         public static void LoadFromStream(Stream stream)
         {
-            UnityEngine.Debug.LogFormat("LoadFromStream(stream length={0})", stream.Length);
+            // UnityEngine.Debug.LogFormat("LoadFromStream(stream length={0})", stream.Length);
             LoadDescriptorSet(FileDescriptorSet.Parser.ParseFrom(stream));
         }
 
-        public static void LoadFromBuf(byte[] buf)
+        public static void LoadFromBuffer(byte[] buf)
         {
-            UnityEngine.Debug.LogFormat("LoadFromBuf() buf({0}bytes)='{1}')", buf.Length, System.BitConverter.ToString(buf));
+            // UnityEngine.Debug.LogFormat("LoadFromBuf() buf({0}bytes)='{1}')", buf.Length, System.BitConverter.ToString(buf));
             LoadDescriptorSet(FileDescriptorSet.Parser.ParseFrom(buf));
         }
 

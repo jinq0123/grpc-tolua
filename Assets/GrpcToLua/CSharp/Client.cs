@@ -53,6 +53,7 @@ namespace GrpcToLua
             duplexStreamingMethods = new MethodDictionary(serviceName, grpc.MethodType.DuplexStreaming);
         }
 
+        // Get method info. Used in Lua.
         public LuaTable GetMethodInfo(string methodName)
         {
             var desc = GetMethodDescriptor(methodName);
