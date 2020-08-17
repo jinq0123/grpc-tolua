@@ -22,59 +22,8 @@ namespace GrpcToLua
         // Serialize
         public byte[] ToByteArray()
         {
-            MemoryStream ms = new MemoryStream();
-            pb.CodedOutputStream output = new pb.CodedOutputStream(ms);
-            WriteTo(output);
-            return ms.GetBuffer();
-        }
-
-        public void WriteTo(pb::CodedOutputStream output)
-        {
-            LuaDictTable dicTable = tbl.ToDictTable();
-            foreach (DictionaryEntry item in dicTable)
-            {
-                object key = item.Key;
-                UnityEngine.Debug.LogFormat("table item: {0}({2})->{1}({3})", key, item.Value, key.GetType(), item.Value.GetType());
-                if (!(key is System.String))
-                {
-                    continue;
-                }
-                WriteFieldTo(key.ToString(), item.Value, output);
-            }
-        }
-
-        private void WriteFieldTo(string fieldName, object value, pb::CodedOutputStream output)
-        {
-            gpr.FieldDescriptor fieldDesc = desc.FindFieldByName(fieldName);
-            if (fieldDesc == null)
-            {
-                // TODO: Warn if got unknown field. Disable warn if has DISABLE_PB_KNOWN_FIELD.
-                return;
-            }
-            int fieldNumber = fieldDesc.FieldNumber;
-            gpr.FieldType fieldType = fieldDesc.FieldType;
-            UnityEngine.Debug.LogFormat("field: ({0}){1} repeated:{2} type:{3} value:{4}",
-                fieldNumber, fieldDesc.FullName, fieldDesc.IsRepeated, fieldType, value);
-            if (fieldDesc.IsRepeated)
-            {
-                WriteRepeatedFieldTo(fieldNumber, fieldType, value as LuaTable, output);
-                return;
-            }
-            WriteFieldTo(fieldNumber, fieldType, value, output);
-        }
-
-        private void WriteRepeatedFieldTo(int fieldNumber, gpr.FieldType fieldType, LuaTable values, pb::CodedOutputStream output)
-        {
-            UnityEngine.Debug.LogFormat("WriteRepeatedFiledTo()");
-            if (values == null) {
-                return;
-            }
-            // TODO
-        }
-
-        private void WriteFieldTo(int fieldNumber, gpr.FieldType fieldType, object value, pb::CodedOutputStream output)
-        {
-            // TODO
+            var serializer = new Serializer();
+            return serializer.Serialize(tbl, desc);
         }
 
         // Deserialize

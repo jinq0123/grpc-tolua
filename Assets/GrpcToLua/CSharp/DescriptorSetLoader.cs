@@ -1,7 +1,7 @@
+using Google.Protobuf;
 using System.IO;
 using System.Linq;
 using gpr = Google.Protobuf.Reflection;
-using pb = Google.Protobuf;
 
 namespace GrpcToLua
 {
