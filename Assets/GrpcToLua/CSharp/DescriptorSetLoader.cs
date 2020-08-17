@@ -1,9 +1,7 @@
 using Google.Protobuf;
 using LuaInterface;
-using System;
 using System.IO;
 using System.Linq;
-using System.Text;
 using gpr = Google.Protobuf.Reflection;
 
 namespace GrpcToLua
@@ -39,19 +37,13 @@ namespace GrpcToLua
 
         public static void LoadFromStream(Stream stream)
         {
-            long n = stream.Length;
-            byte[] bytes = new byte[n];
-            stream.Read(bytes, 0, (int)n);
-            LoadFromBuf(bytes);
-
-            // UnityEngine.Debug.LogFormat("LoadFromStream(stream length={0})", stream.Length);
-            // LoadDescriptorSet(FileDescriptorSet.Parser.ParseFrom(stream));
+            UnityEngine.Debug.LogFormat("LoadFromStream(stream length={0})", stream.Length);
+            LoadDescriptorSet(FileDescriptorSet.Parser.ParseFrom(stream));
         }
 
         public static void LoadFromBuf(byte[] buf)
         {
-            UnityEngine.Debug.LogFormat("LoadFromBuf(byte[] buf={0}bytes)", buf.Length);
-            UnityEngine.Debug.LogFormat("buf: {0}", System.BitConverter.ToString(buf));
+            UnityEngine.Debug.LogFormat("LoadFromBuf() buf({0}bytes)='{1}')", buf.Length, System.BitConverter.ToString(buf));
             LoadDescriptorSet(FileDescriptorSet.Parser.ParseFrom(buf));
         }
 
