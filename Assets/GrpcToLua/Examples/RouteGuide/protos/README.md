@@ -12,7 +12,7 @@ protoc --csharp_out=. route_guide.proto
 ## How to generate pb file
 
 ```
-protoc --descriptor_set_out=route_guide.pb route_guide.proto
+protoc --descriptor_set_out=route_guide.pb --include_imports route_guide.proto
 ```
 
 ## How to parse pb file

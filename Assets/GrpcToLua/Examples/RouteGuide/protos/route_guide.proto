@@ -59,6 +59,8 @@ service RouteGuide {
 message Point {
   int32 latitude = 1;
   int32 longitude = 2;
+  
+  repeated int32 ints = 33;
 }
 
 // A latitude-longitude rectangle, represented as two diagonally opposite

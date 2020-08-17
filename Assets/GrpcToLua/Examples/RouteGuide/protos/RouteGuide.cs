@@ -24,30 +24,31 @@ namespace Routeguide {
     static RouteGuideReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChFyb3V0ZV9ndWlkZS5wcm90bxIKcm91dGVndWlkZSIsCgVQb2ludBIQCghs",
-            "YXRpdHVkZRgBIAEoBRIRCglsb25naXR1ZGUYAiABKAUiSQoJUmVjdGFuZ2xl",
-            "Eh0KAmxvGAEgASgLMhEucm91dGVndWlkZS5Qb2ludBIdCgJoaRgCIAEoCzIR",
-            "LnJvdXRlZ3VpZGUuUG9pbnQiPAoHRmVhdHVyZRIMCgRuYW1lGAEgASgJEiMK",
-            "CGxvY2F0aW9uGAIgASgLMhEucm91dGVndWlkZS5Qb2ludCJBCglSb3V0ZU5v",
-            "dGUSIwoIbG9jYXRpb24YASABKAsyES5yb3V0ZWd1aWRlLlBvaW50Eg8KB21l",
-            "c3NhZ2UYAiABKAkiYgoMUm91dGVTdW1tYXJ5EhMKC3BvaW50X2NvdW50GAEg",
-            "ASgFEhUKDWZlYXR1cmVfY291bnQYAiABKAUSEAoIZGlzdGFuY2UYAyABKAUS",
-            "FAoMZWxhcHNlZF90aW1lGAQgASgFMoUCCgpSb3V0ZUd1aWRlEjYKCkdldEZl",
-            "YXR1cmUSES5yb3V0ZWd1aWRlLlBvaW50GhMucm91dGVndWlkZS5GZWF0dXJl",
-            "IgASPgoMTGlzdEZlYXR1cmVzEhUucm91dGVndWlkZS5SZWN0YW5nbGUaEy5y",
-            "b3V0ZWd1aWRlLkZlYXR1cmUiADABEj4KC1JlY29yZFJvdXRlEhEucm91dGVn",
-            "dWlkZS5Qb2ludBoYLnJvdXRlZ3VpZGUuUm91dGVTdW1tYXJ5IgAoARI/CglS",
-            "b3V0ZUNoYXQSFS5yb3V0ZWd1aWRlLlJvdXRlTm90ZRoVLnJvdXRlZ3VpZGUu",
-            "Um91dGVOb3RlIgAoATABQjYKG2lvLmdycGMuZXhhbXBsZXMucm91dGVndWlk",
-            "ZUIPUm91dGVHdWlkZVByb3RvUAGiAgNSVEdiBnByb3RvMw=="));
+            "ChFyb3V0ZV9ndWlkZS5wcm90bxIKcm91dGVndWlkZSI6CgVQb2ludBIQCghs",
+            "YXRpdHVkZRgBIAEoBRIRCglsb25naXR1ZGUYAiABKAUSDAoEaW50cxghIAMo",
+            "BSJJCglSZWN0YW5nbGUSHQoCbG8YASABKAsyES5yb3V0ZWd1aWRlLlBvaW50",
+            "Eh0KAmhpGAIgASgLMhEucm91dGVndWlkZS5Qb2ludCI8CgdGZWF0dXJlEgwK",
+            "BG5hbWUYASABKAkSIwoIbG9jYXRpb24YAiABKAsyES5yb3V0ZWd1aWRlLlBv",
+            "aW50IkEKCVJvdXRlTm90ZRIjCghsb2NhdGlvbhgBIAEoCzIRLnJvdXRlZ3Vp",
+            "ZGUuUG9pbnQSDwoHbWVzc2FnZRgCIAEoCSJiCgxSb3V0ZVN1bW1hcnkSEwoL",
+            "cG9pbnRfY291bnQYASABKAUSFQoNZmVhdHVyZV9jb3VudBgCIAEoBRIQCghk",
+            "aXN0YW5jZRgDIAEoBRIUCgxlbGFwc2VkX3RpbWUYBCABKAUyhQIKClJvdXRl",
+            "R3VpZGUSNgoKR2V0RmVhdHVyZRIRLnJvdXRlZ3VpZGUuUG9pbnQaEy5yb3V0",
+            "ZWd1aWRlLkZlYXR1cmUiABI+CgxMaXN0RmVhdHVyZXMSFS5yb3V0ZWd1aWRl",
+            "LlJlY3RhbmdsZRoTLnJvdXRlZ3VpZGUuRmVhdHVyZSIAMAESPgoLUmVjb3Jk",
+            "Um91dGUSES5yb3V0ZWd1aWRlLlBvaW50Ghgucm91dGVndWlkZS5Sb3V0ZVN1",
+            "bW1hcnkiACgBEj8KCVJvdXRlQ2hhdBIVLnJvdXRlZ3VpZGUuUm91dGVOb3Rl",
+            "GhUucm91dGVndWlkZS5Sb3V0ZU5vdGUiACgBMAFCNgobaW8uZ3JwYy5leGFt",
+            "cGxlcy5yb3V0ZWd1aWRlQg9Sb3V0ZUd1aWRlUHJvdG9QAaICA1JUR2IGcHJv",
+            "dG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Routeguide.Point), global::Routeguide.Point.Parser, new[]{ "Latitude", "Longitude" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Routeguide.Rectangle), global::Routeguide.Rectangle.Parser, new[]{ "Lo", "Hi" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Routeguide.Feature), global::Routeguide.Feature.Parser, new[]{ "Name", "Location" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Routeguide.RouteNote), global::Routeguide.RouteNote.Parser, new[]{ "Location", "Message" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Routeguide.RouteSummary), global::Routeguide.RouteSummary.Parser, new[]{ "PointCount", "FeatureCount", "Distance", "ElapsedTime" }, null, null, null)
+          new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
+            new pbr::GeneratedClrTypeInfo(typeof(global::Routeguide.Point), global::Routeguide.Point.Parser, new[]{ "Latitude", "Longitude", "Ints" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Routeguide.Rectangle), global::Routeguide.Rectangle.Parser, new[]{ "Lo", "Hi" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Routeguide.Feature), global::Routeguide.Feature.Parser, new[]{ "Name", "Location" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Routeguide.RouteNote), global::Routeguide.RouteNote.Parser, new[]{ "Location", "Message" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Routeguide.RouteSummary), global::Routeguide.RouteSummary.Parser, new[]{ "PointCount", "FeatureCount", "Distance", "ElapsedTime" }, null, null, null, null)
           }));
     }
     #endregion
@@ -87,6 +88,7 @@ namespace Routeguide {
     public Point(Point other) : this() {
       latitude_ = other.latitude_;
       longitude_ = other.longitude_;
+      ints_ = other.ints_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -117,6 +119,16 @@ namespace Routeguide {
       }
     }
 
+    /// <summary>Field number for the "ints" field.</summary>
+    public const int IntsFieldNumber = 33;
+    private static readonly pb::FieldCodec<int> _repeated_ints_codec
+        = pb::FieldCodec.ForInt32(266);
+    private readonly pbc::RepeatedField<int> ints_ = new pbc::RepeatedField<int>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<int> Ints {
+      get { return ints_; }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as Point);
@@ -132,6 +144,7 @@ namespace Routeguide {
       }
       if (Latitude != other.Latitude) return false;
       if (Longitude != other.Longitude) return false;
+      if(!ints_.Equals(other.ints_)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -140,6 +153,7 @@ namespace Routeguide {
       int hash = 1;
       if (Latitude != 0) hash ^= Latitude.GetHashCode();
       if (Longitude != 0) hash ^= Longitude.GetHashCode();
+      hash ^= ints_.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -161,6 +175,7 @@ namespace Routeguide {
         output.WriteRawTag(16);
         output.WriteInt32(Longitude);
       }
+      ints_.WriteTo(output, _repeated_ints_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -175,6 +190,7 @@ namespace Routeguide {
       if (Longitude != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Longitude);
       }
+      size += ints_.CalculateSize(_repeated_ints_codec);
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -192,6 +208,7 @@ namespace Routeguide {
       if (other.Longitude != 0) {
         Longitude = other.Longitude;
       }
+      ints_.Add(other.ints_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -209,6 +226,11 @@ namespace Routeguide {
           }
           case 16: {
             Longitude = input.ReadInt32();
+            break;
+          }
+          case 266:
+          case 264: {
+            ints_.AddEntriesFrom(input, _repeated_ints_codec);
             break;
           }
         }
