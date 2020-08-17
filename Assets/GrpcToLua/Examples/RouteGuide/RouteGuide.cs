@@ -18,6 +18,7 @@ public class RouteGuide : MonoBehaviour
 #endif
         new LuaResLoader();
         lua = new LuaState();
+        lua.OpenLibs(LuaDLL.luaopen_pb);
         lua.AddSearchPath(Application.dataPath + "/GrpcToLua/Lua");
         lua.Start();
         LuaBinder.Bind(lua);
