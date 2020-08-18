@@ -33,7 +33,7 @@ function Client:call(method_name, request)
     elseif info.is_server_streaming then
         return self:server_streaming_call(method_name, request_data, info.output_type)
     end
-    self:unary_call(method_name, request_data, info.output_type)
+    return self:unary_call(method_name, request_data, info.output_type)
 end  -- call()
 
 function Client:unary_call(method_name, request_data, output_type)
