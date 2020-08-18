@@ -79,7 +79,7 @@ namespace GrpcToLua
             return serviceName + "." + methodName;
         }
 
-        public grpc::AsyncUnaryCall<byte[]> UnaryCall(string methodName, LuaByteBuffer request)
+        public grpc::AsyncUnaryCall<byte[]> UnaryCall(string methodName, byte[] request)
         {
             UnityEngine.Debug.LogFormat("Client.UnaryCall(methodNaame={0}, request={1})", methodName, request);
 
@@ -89,7 +89,7 @@ namespace GrpcToLua
             DateTime? deadline = null;
             CancellationToken cancellationToken = default(CancellationToken);
             var options = new grpc::CallOptions(headers, deadline, cancellationToken);
-            return CallInvoker.AsyncUnaryCall(method, null, options, request.buffer);
+            return CallInvoker.AsyncUnaryCall(method, null, options, request);
         }
 
         public ServerStreamingCall ServerStreamingCall(string methodName, LuaTable request)
