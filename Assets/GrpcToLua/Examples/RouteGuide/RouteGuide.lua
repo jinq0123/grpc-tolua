@@ -48,10 +48,35 @@ end
 
 function CoRecordRoute()
     print('CoRecordRoute')
+    call = client.call('RecordRoute')
+    features = GetFeatures()
+    for _, f in ipairs(features) do
+        call.write(f)
+        coroutine.wait(0.1)
+    end
+    call.complete()
+    rsp = call.get_response()
+    print('RecordRoute resonse: '..Dump(rsp))
 end
 
 function CoRouteChat()
     print('CoRouteChat')
+    call = client.call('RouteChat')
+    coroutine.start(function() CoPrintResponses(call) end)
+    notes = GetRouteNotes()
+    for _, n in ipairs(notes)
+        call.write(n)
+        coroutine.wait(0.1)
+    end
+    call.complete()  -- co_complete?
+end
+
+function CoPrintResponse(call)
+    call.co_for_each_response(
+        function(rsp)
+            print('RouteChat response: '..Dump(rsp))
+        end
+    )
 end
 
 function GetPoint(latitude, longitude)
@@ -70,4 +95,28 @@ function DumpTable(t)
         s = s .. string.format('[%q] => %q, ', pos, val)
     end
     return s .. '}'
+end
+
+function GetFeatures()
+    return {
+        {location = GetPoint(407838351, -746143763), name = "Patriots Path, Mendham, NJ 07945, USA"},
+        {location = GetPoint(408122808, -743999179), name = "101 New Jersey 10, Whippany, NJ 07981, USA"},
+        {location = GetPoint(413628156, -749015468), name = "U.S. 6, Shohola, PA 18458, USA"}
+    }
+end
+
+function GetNotes()
+    return {
+        NewNote("First message", 0, 0),
+        NewNote("Second message", 0, 1),
+        NewNote("Third message", 1, 0),
+        NewNote("Fourth message", 0, 0)
+    }
+end
+
+function NewNote(message, lat, lon)
+    return {
+        message = message,
+        location = GetPoint(lat, lon)
+    }
 end
