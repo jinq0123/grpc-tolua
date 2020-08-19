@@ -19,6 +19,7 @@ end
 
 setmetatable(Client, {__call = construct})
 
+-- request must be nil if server streaming
 function Client:call(method_name, request)
     print(string.format("Client:call(method_name=%q, request=%q)", method_name, request))
     local info = assert(self.client:GetMethodInfo(method_name))
@@ -26,6 +27,7 @@ function Client:call(method_name, request)
     
     local is_client_streaming = info.is_client_streaming
     local is_server_streaming = info.is_server_streaming
+    assert_request(request, is_server_streaming)
     if is_client_streaming and is_server_streaming then
         return self:duplex_streaming_call(method_name, request_data, info.output_type)
     elseif is_client_streaming then
@@ -48,6 +50,15 @@ function Client:unary_call(method_name, request_data, output_type)
     print(string.format("result: %q(%s)", result, type(result)))
     local respMsg = pb.decode(output_type, tolua.tolstring(result))
     return respMsg
+end
+
+local assert_request(request, is_server_streaming, method_name)
+    if is_server_streaming then
+        assert(request == nil, method_name .. "() is server streaming method, request must be nil")
+        return
+    end
+    request_type = type(request)
+    assert(request_type == "table", method_name .. "() request must be a table, but got " .. request_type)
 end
 
 return Client
