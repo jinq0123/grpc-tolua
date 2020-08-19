@@ -15,3 +15,8 @@ LuaLooper:Update() (at Assets/ToLua/Misc/LuaLooper.cs:101)
 	+ Provide a method to verify all dependencies are added
 * include_imports
 	+ protoc --descriptor_set_out=out.pb --include_imports a.proto b.proto
+* Client.call() returns immediately a Call object
+	+ no need to run in coroutine
+	+ in most cases, ignoring the response, no need to wait for the response
+* Call.wait_for_response() will wait in coroutine
+* Call.wait_for_each_response() must run in coroutine
