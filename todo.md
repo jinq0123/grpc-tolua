@@ -18,5 +18,5 @@ LuaLooper:Update() (at Assets/ToLua/Misc/LuaLooper.cs:101)
 * Client.call() returns immediately a Call object
 	+ no need to run in coroutine
 	+ in most cases, ignoring the response, no need to wait for the response
-* Call.wait_for_response() will wait in coroutine
+* Call.await_response() will wait in coroutine
 * Call.wait_for_each_response() must run in coroutine
