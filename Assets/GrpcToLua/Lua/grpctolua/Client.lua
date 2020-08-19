@@ -20,25 +20,58 @@ end
 
 setmetatable(Client, {__call = construct})
 
+-- call creates a grpc call object and returns immediately.
 -- request must be nil if server streaming
 function Client:call(method_name, request)
-    print(string.format("Client:call(method_name=%q, request=%q)", method_name, request))
-    local info = assert(self.client:GetMethodInfo(method_name))
-    local request_data = pb.encode(info.input_type, request)
+    assert(type(method_name) == "string")
     
-    local is_client_streaming = info.is_client_streaming
-    local is_server_streaming = info.is_server_streaming
-    assert_request(request, is_server_streaming)
-    if is_client_streaming and is_server_streaming then
-        return self:duplex_streaming_call(method_name, request_data, info.output_type)
-    elseif is_client_streaming then
-        return self:client_streaming_call(method_name, request_data, info.output_type)
-    elseif info.is_server_streaming then
-        return self:server_streaming_call(method_name, request_data, info.output_type)
+    print(string.format("Client:call(method_name=%q, request=%q)", method_name, request))
+    local method_info = assert(self.client:GetMethodInfo(method_name))
+    assert(type(method_info) == table)
+    
+    local clt = self.client
+    local is_client_streaming = method_info.is_client_streaming
+    if method_info.is_server_streaming then
+        assert(request == nil, method_name .. "() is server streaming method, request must be nil")
+        if is_client_streaming then
+            local csharp_call = clt:AsyncDuplexStreamingCall(method_name)
+            return Call(csharp_call, method_info)
+        end
+        local csharp_call = clt:AsyncServerStreamingCall(method_name)
+        return Call(csharp_call, method_info)
     end
-    return self:unary_call(method_name, request_data, info.output_type)
+    
+    request_type = type(request)
+    assert(request_type == "table", method_name .. "() request must be a table, but got " .. request_type)
+    local request_data = assert(pb.encode(method_info.input_type, request))
+    if is_client_streaming then
+        local csharp_call = clt:AsyncClientStreamingCall(method_name, request_data)
+        return Call(csharp_call, method_info)
+    end
+    local csharp_call = clt:AsyncUnaryCall(method_name, request_data)
+    return Call(csharp_call, method_info)
 end  -- call()
 
+-- _call returns c# Call object: 
+-- AsyncUnaryCall<T>, AsyncServerStreamingCall<T>, AsyncClientStreamingCall<T> or AsyncDuplexStreamingCall<T>,
+--  where T is grpc request type byte[]
+
+--[[
+function Client:_call(method_name, request_data, is_server_streaming, is_client_streaming)
+    assert(type(request_data) == string)
+    local clt = self.client
+    if is_client_streaming and is_server_streaming then
+        return clt:AsyncDuplexStreamingCall(method_name, request_data)
+    elseif is_client_streaming then
+        return clt:AsyncClientStreamingCall(method_name, request_data)
+    elseif is_server_streaming then
+        return clt:AsyncServerStreamingCall(method_name, request_data)
+    end
+    return clt:AsyncUnaryCall(method_name, request_data)
+end  -- call()
+]]
+
+--[[
 function Client:unary_call(method_name, request_data, output_type)
     local call = self.client:UnaryCall(method_name, request_data)
     await(call)
@@ -51,8 +84,9 @@ function Client:unary_call(method_name, request_data, output_type)
     print(string.format("result: %q(%s)", result, type(result)))
     local respMsg = pb.decode(output_type, tolua.tolstring(result))
     return respMsg
-end
+end]]
 
+--[[ assert request is table or nil
 local assert_request(request, is_server_streaming, method_name)
     if is_server_streaming then
         assert(request == nil, method_name .. "() is server streaming method, request must be nil")
@@ -60,6 +94,6 @@ local assert_request(request, is_server_streaming, method_name)
     end
     request_type = type(request)
     assert(request_type == "table", method_name .. "() request must be a table, but got " .. request_type)
-end
+end]]
 
 return Client

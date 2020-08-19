@@ -15,6 +15,8 @@ namespace GrpcToLua
         MethodDictionary clientStreamingMethods;
         MethodDictionary serverStreamingMethods;
         MethodDictionary duplexStreamingMethods;
+        
+        static readonly defaultCallOptions = new grpc::CallOptions(null, null, default(CancellationToken));
 
         /// <summary>Creates a new client</summary>
         /// <param name="channel">The channel to use to make remote calls.</param>
@@ -79,34 +81,36 @@ namespace GrpcToLua
             return serviceName + "." + methodName;
         }
 
-        public grpc::AsyncUnaryCall<byte[]> UnaryCall(string methodName, byte[] request)
+        public grpc::AsyncUnaryCall<byte[]> AsyncUnaryCall(string methodName, byte[] request)
         {
-            UnityEngine.Debug.LogFormat("Client.UnaryCall(methodNaame={0}, request={1})", methodName, request);
+            UnityEngine.Debug.LogFormat("Client.AsyncUnaryCall(methodName={0}, request={1})", methodName, request);
 
             var method = unaryMethods.GetMethod(methodName);
-            // TODO: input headers, deadline, cancellationToken
+            /* TODO: input headers, deadline, cancellationToken
             grpc::Metadata headers = null;
             DateTime? deadline = null;
             CancellationToken cancellationToken = default(CancellationToken);
             var options = new grpc::CallOptions(headers, deadline, cancellationToken);
-            return CallInvoker.AsyncUnaryCall(method, null, options, request);
+            */
+            return CallInvoker.AsyncUnaryCall(method, null, defaultCallOptions, request);
         }
 
-        public ServerStreamingCall ServerStreamingCall(string methodName, LuaTable request)
+        public grpc::AsyncServerStreamingCall<byte[]> AsyncServerStreamingCall(string methodName, byte[] request)
         {
             UnityEngine.Debug.LogFormat("Client.ServerStreamingCall(methodNaame={0}, request={1})", methodName, request);
-            // TODO
-            return new ServerStreamingCall();
+            var method = serverStreamingMethods.GetMethod(methodName)
+            return CallInvoker.AsyncServerStreamingCall(method, null, defaultCallOptions, request);
         }
         
-        public ClientStreamingCall ClientStreamingCall(string methodName, LuaTable request)
+        request is null!!!
+        public grpc::AsyncClientStreamingCall<byte[]> AsyncClientStreamingCall(string methodName, byte[] request)
         {
             UnityEngine.Debug.LogFormat("Client.ClientStreamingCall(methodNaame={0}, request={1})", methodName, request);
-            // TODO
-            return new ClientStreamingCall();
+            var method = clientStreamingMethods.GetMethod(methodName)
+            return CallInvoker.AsyncClientStreamingCall(method, null, defaultCallOptions, request)
         }
         
-        public DuplexStreamingCall DuplexStreamingCall(string methodName, LuaTable request)
+        public grpc::AsyncDuplexStreamingCall<byte[]> AsyncDuplexStreamingCall(string methodName, byte[] request)
         {
             UnityEngine.Debug.LogFormat("Client.DuplexStreamingCall(methodNaame={0}, request={1})", methodName, request);
             // TODO
