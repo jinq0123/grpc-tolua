@@ -36,6 +36,14 @@ end
 
 function CoListFeatures()
     print('CoListFeatures')
+    req = {lo = GetPoint(400000000, -750000000), hi = GetPoint(420000000, -730000000)}
+    call = client.call('ListFeature', req)
+    print('ListFeature:')
+    call.for_each_response(
+        function(rsp)
+            print(DumpTable(rsp))
+        end
+    )
 end
 
 function CoRecordRoute()
