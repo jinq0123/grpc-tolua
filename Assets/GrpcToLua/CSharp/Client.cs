@@ -97,22 +97,21 @@ namespace GrpcToLua
 
         public grpc::AsyncServerStreamingCall<byte[]> AsyncServerStreamingCall(string methodName, byte[] request)
         {
-            UnityEngine.Debug.LogFormat("Client.ServerStreamingCall(methodNaame={0}, request={1})", methodName, request);
+            UnityEngine.Debug.LogFormat("Client.AsyncServerStreamingCall(methodNaame={0}, request={1})", methodName, request);
             var method = serverStreamingMethods.GetMethod(methodName)
             return CallInvoker.AsyncServerStreamingCall(method, null, defaultCallOptions, request);
         }
         
-        request is null!!!
-        public grpc::AsyncClientStreamingCall<byte[]> AsyncClientStreamingCall(string methodName, byte[] request)
+        public grpc::AsyncClientStreamingCall<byte[]> AsyncClientStreamingCall(string methodName)
         {
-            UnityEngine.Debug.LogFormat("Client.ClientStreamingCall(methodNaame={0}, request={1})", methodName, request);
+            UnityEngine.Debug.LogFormat("Client.AsyncClientStreamingCall(methodNaame={0})", methodName);
             var method = clientStreamingMethods.GetMethod(methodName)
-            return CallInvoker.AsyncClientStreamingCall(method, null, defaultCallOptions, request)
+            return CallInvoker.AsyncClientStreamingCall(method, null, defaultCallOptions)
         }
         
-        public grpc::AsyncDuplexStreamingCall<byte[]> AsyncDuplexStreamingCall(string methodName, byte[] request)
+        public grpc::AsyncDuplexStreamingCall<byte[]> AsyncDuplexStreamingCall(string methodName)
         {
-            UnityEngine.Debug.LogFormat("Client.DuplexStreamingCall(methodNaame={0}, request={1})", methodName, request);
+            UnityEngine.Debug.LogFormat("Client.AsyncDuplexStreamingCall(methodNaame={0})", methodName);
             // TODO
             return new DuplexStreamingCall();
         }
