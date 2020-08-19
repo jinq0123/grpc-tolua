@@ -30,21 +30,21 @@ function Client:call(method_name, request)
     assert(type(method_info) == table)
     
     local clt = self.client
-    local is_client_streaming = method_info.is_client_streaming
-    if method_info.is_server_streaming then
+    local is_server_streaming = method_info.is_server_streaming
+    if method_info.is_client_streaming then
         assert(request == nil, method_name .. "() is server streaming method, request must be nil")
-        if is_client_streaming then
+        if is_server_streaming then
             local csharp_call = clt:AsyncDuplexStreamingCall(method_name)
             return Call(csharp_call, method_info)
         end
-        local csharp_call = clt:AsyncServerStreamingCall(method_name)
+        local csharp_call = clt:AsyncClientStreamingCall(method_name)
         return Call(csharp_call, method_info)
     end
     
     assert(type(request) == "table", method_name .. "() request must be a table, but got " .. type(request))
     local request_data = assert(pb.encode(method_info.input_type, request))
-    if is_client_streaming then
-        local csharp_call = clt:AsyncClientStreamingCall(method_name, request_data)
+    if is_server_streaming then
+        local csharp_call = clt:AsyncServerStreamingCall(method_name, request_data)
         return Call(csharp_call, method_info)
     end
     local csharp_call = clt:AsyncUnaryCall(method_name, request_data)
