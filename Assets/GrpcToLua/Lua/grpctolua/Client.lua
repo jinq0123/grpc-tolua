@@ -1,11 +1,12 @@
 -- Class follows: http://lua-users.org/wiki/LuaStyleGuide finance/BankAccount.lua
--- Client class forwards calls to c# and handles coroutine wait.
+-- Client class forwards calls to c# and returns Call object.
 
 local Client = {}
 Client.__index = Client
 
 local await = require("grpctolua.await")
 local pb = require("pb")  -- lua-protobuf
+local Call = require("grpctolua.Call")
 
 local function construct(self, channel, service_name)
     print(string.format("construct(self=%q(%s), channel=%q(%s), service_name=%q(%s))", self, type(self), channel, type(channel), service_name, type(service_name)))
