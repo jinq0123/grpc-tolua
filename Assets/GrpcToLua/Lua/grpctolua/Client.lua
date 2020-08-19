@@ -41,8 +41,7 @@ function Client:call(method_name, request)
         return Call(csharp_call, method_info)
     end
     
-    request_type = type(request)
-    assert(request_type == "table", method_name .. "() request must be a table, but got " .. request_type)
+    assert(type(request) == "table", method_name .. "() request must be a table, but got " .. type(request))
     local request_data = assert(pb.encode(method_info.input_type, request))
     if is_client_streaming then
         local csharp_call = clt:AsyncClientStreamingCall(method_name, request_data)
