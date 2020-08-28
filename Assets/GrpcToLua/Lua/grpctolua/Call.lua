@@ -4,6 +4,8 @@
 local Call = {}
 Call.__index = Call
 
+local await = require("grpctolua.await")
+
 local function construct(self, csharp_call, method_info)
     assert(type(csharp_call) == "userdata")
     assert(type(method_info) == "table")
@@ -22,4 +24,24 @@ end
 
 setmetatable(Call, {__call = construct})
 
+-- await_response waits for the response and returns it.
+-- It must be called in coroutine.
+-- TODO: return error
+function Call:await_response()
+    local call = self.csharp_call
+    await(call)
+    print(string.format("call: %q(%s)", call, type(call)))
+    local status = call:GetStatus()
+    print(string.format("status: %q(%s)", status, type(status)))
+    local resp = call.ResponseAsync
+    print(string.format("resp: %q(%s)", resp, type(resp)))
+    local result = resp.Result
+    print(string.format("result: %q(%s)", result, type(result)))
+    local output_type = self.method_info.output_type
+    local respMsg = pb.decode(output_type, tolua.tolstring(result))
+    return respMsg
+end
+
 -- TODO
+
+return Call

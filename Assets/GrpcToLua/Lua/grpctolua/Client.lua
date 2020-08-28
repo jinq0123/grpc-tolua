@@ -4,7 +4,6 @@
 local Client = {}
 Client.__index = Client
 
-local await = require("grpctolua.await")
 local pb = require("pb")  -- lua-protobuf
 local Call = require("grpctolua.Call")
 
@@ -23,11 +22,11 @@ setmetatable(Client, {__call = construct})
 -- call creates a grpc call object and returns immediately.
 -- request must be nil if server streaming
 function Client:call(method_name, request)
-    assert(type(method_name) == "string")
+    assert(type(method_name) == "string", "method_name must be string")
     
     print(string.format("Client:call(method_name=%q, request=%q)", method_name, request))
     local method_info = assert(self.client:GetMethodInfo(method_name))
-    assert(type(method_info) == table)
+    assert(type(method_info) == "table", "method_info must be table")
     
     local clt = self.client
     local is_server_streaming = method_info.is_server_streaming
@@ -70,20 +69,12 @@ function Client:_call(method_name, request_data, is_server_streaming, is_client_
 end  -- call()
 ]]
 
---[[
-function Client:unary_call(method_name, request_data, output_type)
-    local call = self.client:UnaryCall(method_name, request_data)
-    await(call)
-    print(string.format("call: %q(%s)", call, type(call)))
-    local status = call:GetStatus()
-    print(string.format("status: %q(%s)", status, type(status)))
-    local resp = call.ResponseAsync
-    print(string.format("resp: %q(%s)", resp, type(resp)))
-    local result = resp.Result
-    print(string.format("result: %q(%s)", result, type(result)))
-    local respMsg = pb.decode(output_type, tolua.tolstring(result))
-    return respMsg
-end]]
+-- await_call calls the rpc method and wait for the response.
+-- It must be called in a coroutine.
+function Client:await_call(method_name, request)
+    local call = self:call(method_name, request)
+    return call:await_response()
+end
 
 --[[ assert request is table or nil
 local assert_request(request, is_server_streaming, method_name)
