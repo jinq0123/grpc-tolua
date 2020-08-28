@@ -66,7 +66,7 @@ function CoRouteChat()
     coroutine.start(function() CoPrintResponses(call) end)
     
     notes = GetRouteNotes()
-    for _, n in ipairs(notes)
+    for _, n in ipairs(notes) do
         call.write(n)
         coroutine.wait(0.1)
     end
