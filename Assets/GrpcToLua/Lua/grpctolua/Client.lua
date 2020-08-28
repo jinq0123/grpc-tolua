@@ -22,11 +22,11 @@ setmetatable(Client, {__call = construct})
 -- call creates a grpc call object and returns immediately.
 -- request must be nil if server streaming
 function Client:call(method_name, request)
-    assert(type(method_name) == "string", "method_name must be string")
+    assert(type(method_name) == "string", "method_name must be a string")
     
     print(string.format("Client:call(method_name=%q, request=%q)", method_name, request))
     local method_info = assert(self.client:GetMethodInfo(method_name))
-    assert(type(method_info) == "table", "method_info must be table")
+    assert(type(method_info) == "table", "method_info must be a table")
     
     local clt = self.client
     local is_server_streaming = method_info.is_server_streaming

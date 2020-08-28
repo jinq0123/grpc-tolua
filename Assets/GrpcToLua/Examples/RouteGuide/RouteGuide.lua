@@ -37,9 +37,9 @@ end
 function CoListFeatures()
     print('CoListFeatures')
     req = {lo = GetPoint(400000000, -750000000), hi = GetPoint(420000000, -730000000)}
-    call = client.call('ListFeature', req)
+    call = client:call('ListFeature', req)
     print('ListFeature:')
-    call.wait_for_each_response(
+    call:wait_for_each_response(
         function(rsp)
             print(DumpTable(rsp))
         end
@@ -48,33 +48,33 @@ end
 
 function CoRecordRoute()
     print('CoRecordRoute')
-    call = client.call('RecordRoute')
+    call = client:call('RecordRoute')
     features = GetFeatures()
     for _, f in ipairs(features) do
-        call.write(f)
+        call:write(f)
         coroutine.wait(0.1)
     end
-    call.complete()
-    rsp = call.await_response()
+    call:complete()
+    rsp = call:await_response()
     print('RecordRoute resonse: '..Dump(rsp))
 end
 
 function CoRouteChat()
     print('CoRouteChat')
-    call = client.call('RouteChat')
+    call = client:call('RouteChat')
     
     coroutine.start(function() CoPrintResponses(call) end)
     
     notes = GetRouteNotes()
     for _, n in ipairs(notes) do
-        call.write(n)
+        call:write(n)
         coroutine.wait(0.1)
     end
-    call.complete()
+    call:complete()
 end
 
 function CoPrintResponse(call)
-    call.wait_for_each_response(
+    call:wait_for_each_response(
         function(rsp)
             print('RouteChat response: '..Dump(rsp))
         end
