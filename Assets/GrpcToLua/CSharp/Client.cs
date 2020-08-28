@@ -16,7 +16,7 @@ namespace GrpcToLua
         MethodDictionary serverStreamingMethods;
         MethodDictionary duplexStreamingMethods;
         
-        static readonly defaultCallOptions = new grpc::CallOptions(null, null, default(CancellationToken));
+        static readonly grpc::CallOptions defaultCallOptions = new grpc::CallOptions(null, null, default(CancellationToken));
 
         /// <summary>Creates a new client</summary>
         /// <param name="channel">The channel to use to make remote calls.</param>
