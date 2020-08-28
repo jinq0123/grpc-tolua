@@ -58,8 +58,10 @@ namespace GrpcToLua
         // Get method info. Used in Lua.
         public LuaTable GetMethodInfo(string methodName)
         {
+            // UnityEngine.Debug.LogFormat("GetMethodInfo(methodName='{0}')", methodName);
             var desc = GetMethodDescriptor(methodName);
             if (desc == null) {
+                // UnityEngine.Debug.LogFormat("GetMethodDescriptor({0}) returns null", methodName);
                 return null;
             }
             var info = LuaState.Get(IntPtr.Zero).NewTable();

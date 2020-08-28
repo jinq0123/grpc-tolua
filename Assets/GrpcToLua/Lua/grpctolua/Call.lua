@@ -38,8 +38,18 @@ function Call:await_response()
     local result = resp.Result
     print(string.format("result: %q(%s)", result, type(result)))
     local output_type = self.method_info.output_type
-    local respMsg = pb.decode(output_type, tolua.tolstring(result))
-    return respMsg
+    local resp_msg = pb.decode(output_type, tolua.tolstring(result))
+    return resp_msg
+end
+
+-- wait_for_each_response waits for the responses and calls the functor for each response.
+-- It must be called in coroutin.
+-- func is a function whick take the respones message as the parameter:
+function Call:wait_for_each_response(func)
+    local call = self.csharp_call
+    local stream = call.ResponseStream
+    print(string.format("stream: %q(%s)", stream, type(stream)))
+    stream.MoveNext()
 end
 
 -- TODO

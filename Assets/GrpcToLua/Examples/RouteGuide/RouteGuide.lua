@@ -37,7 +37,7 @@ end
 function CoListFeatures()
     print('CoListFeatures')
     req = {lo = GetPoint(400000000, -750000000), hi = GetPoint(420000000, -730000000)}
-    call = client:call('ListFeature', req)
+    call = client:call('ListFeatures', req)
     print('ListFeature:')
     call:wait_for_each_response(
         function(rsp)
