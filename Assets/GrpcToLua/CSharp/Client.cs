@@ -83,7 +83,7 @@ namespace GrpcToLua
             return serviceName + "." + methodName;
         }
 
-        public grpc::AsyncUnaryCall<byte[]> AsyncUnaryCall(string methodName, byte[] request)
+        public AsyncUnaryCall AsyncUnaryCall(string methodName, byte[] request)
         {
             UnityEngine.Debug.LogFormat("Client.AsyncUnaryCall(methodName={0}, request={1})", methodName, request);
 
@@ -94,28 +94,32 @@ namespace GrpcToLua
             CancellationToken cancellationToken = default(CancellationToken);
             var options = new grpc::CallOptions(headers, deadline, cancellationToken);
             */
-            return CallInvoker.AsyncUnaryCall(method, null, defaultCallOptions, request);
+            var call = CallInvoker.AsyncUnaryCall(method, null, defaultCallOptions, request);
+            return new AsyncUnaryCall(call);
         }
 
-        public grpc::AsyncServerStreamingCall<byte[]> AsyncServerStreamingCall(string methodName, byte[] request)
+        public AsyncServerStreamingCall AsyncServerStreamingCall(string methodName, byte[] request)
         {
             UnityEngine.Debug.LogFormat("Client.AsyncServerStreamingCall(methodNaame={0}, request={1})", methodName, request);
             var method = serverStreamingMethods.GetMethod(methodName);
-            return CallInvoker.AsyncServerStreamingCall(method, null, defaultCallOptions, request);
+            var call = CallInvoker.AsyncServerStreamingCall(method, null, defaultCallOptions, request);
+            return new AsyncServerStreamingCall(call);
         }
         
-        public grpc::AsyncClientStreamingCall<byte[], byte[]> AsyncClientStreamingCall(string methodName)
+        public AsyncClientStreamingCall AsyncClientStreamingCall(string methodName)
         {
             UnityEngine.Debug.LogFormat("Client.AsyncClientStreamingCall(methodNaame={0})", methodName);
             var method = clientStreamingMethods.GetMethod(methodName);
-            return CallInvoker.AsyncClientStreamingCall(method, null, defaultCallOptions);
+            var call = CallInvoker.AsyncClientStreamingCall(method, null, defaultCallOptions);
+            return new AsyncClientStreamingCall(call);
         }
         
-        public grpc::AsyncDuplexStreamingCall<byte[], byte[]> AsyncDuplexStreamingCall(string methodName)
+        public AsyncDuplexStreamingCall AsyncDuplexStreamingCall(string methodName)
         {
             UnityEngine.Debug.LogFormat("Client.AsyncDuplexStreamingCall(methodNaame={0})", methodName);
             var method = clientStreamingMethods.GetMethod(methodName);
-            return CallInvoker.AsyncDuplexStreamingCall(method, null, defaultCallOptions);
+            call = CallInvoker.AsyncDuplexStreamingCall(method, null, defaultCallOptions);
+            return new AsyncDuplexStreamingCall(call);
         }
 
         /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
