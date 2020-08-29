@@ -62,27 +62,27 @@ function Call:wait_for_each_response(func)
     end  -- while
 end
 
--- TODO: Is async method necessary? All await?
-
--- write_async writes to stream asynchronously and returns a task object.
--- The caller should wait for the task: await(task):
---   Only one write can be pending at a time.
--- It is suggested to use await_write() instead.
-function Call:write_async(request_message)
+-- await_write writes to stream and wait for it.
+-- It must be called in coroutine.
+-- Only one write can be pending at a time.
+function Call:await_write(request_message)
     assert(type(request_message) == "table", "request_message must be a table")
     local request_data = self:_encode_request(request_message)
+    print("self.csharp_call:WriteAsync(request_data)...")
     local task = self.csharp_call:WriteAsync(request_data)
-    return task
-end  -- write_async()
-
--- await_write writes and wait for it.
--- It must be called in coroutine.
-function Call:await_write(request_message)
-    local task = self:write_async(request_message)
+    print("await(task)...")
     await(task)
+    print("await(task) done.")
 end  -- await_write()
 
-function Call:complete_async()
+-- await_complete completes the writing and wait for it.
+-- It must be called in coroutine.
+function Call:await_complete()
+    print("self.csharp_call:CompleteAsync()...")
+    local task = self.csharp_call:CompleteAsync()
+    print("await(task)...")
+    await(task)
+    print("await(task) done")
 end
 
 -- _decode_response decode response buffer into response message

@@ -57,9 +57,12 @@ function CoRecordRoute()
     
     features = GetFeatures()
     for _, f in ipairs(features) do
+        print('call:await_write(f)...')
         call:await_write(f)
+        print('coroutine.wait(0.1)...')
         coroutine.wait(0.1)
     end
+    print('call:await_complete()')
     call:await_complete()
 end
 

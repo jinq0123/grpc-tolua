@@ -88,5 +88,10 @@ namespace GrpcToLua
         {
             return call.RequestStream.WriteAsync(requestData);
         }
+        
+        public Task CompleteAsync()
+        {
+            return call.RequestStream.CompleteAsync();
+        }
     }
 }
