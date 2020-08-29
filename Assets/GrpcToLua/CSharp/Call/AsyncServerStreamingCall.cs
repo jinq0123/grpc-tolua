@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using grpc = Grpc.Core;
 
@@ -61,6 +62,16 @@ namespace GrpcToLua
         public void Dispose()
         {
             call.Dispose();
+        }
+        
+        public async Task<byte[]> GetNextResponseAsync()
+        {
+            var responseStream = call.ResponseStream;
+            bool ok = await responseStream.MoveNext(CancellationToken.None);
+            if (ok) {
+                return responseStream.Current;
+            }
+            return null;
         }
     }
 }

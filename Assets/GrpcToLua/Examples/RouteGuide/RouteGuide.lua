@@ -56,7 +56,7 @@ function CoRecordRoute()
     end
     call:complete()
     rsp = call:await_response()
-    print('RecordRoute resonse: '..Dump(rsp))
+    print('RecordRoute resonse: '..DumpTable(rsp))
 end
 
 function CoRouteChat()
@@ -76,7 +76,7 @@ end
 function CoPrintResponse(call)
     call:wait_for_each_response(
         function(rsp)
-            print('RouteChat response: '..Dump(rsp))
+            print('RouteChat response: '..DumpTable(rsp))
         end
     )
 end

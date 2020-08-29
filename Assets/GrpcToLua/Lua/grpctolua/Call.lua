@@ -48,18 +48,17 @@ function Call:wait_for_each_response(func)
     local call = self.csharp_call
     local output_type = self.method_info.output_type
     while (true) do
-        -- tolua must have wait_until(), or merge from https://github.com/woshihuo12/tolua
-        coroutine.wait_until(function()
-            return call.IsNextResponseReady()
-        end)
-        
-        local rsp = call.GetNextResponse()
-        if rsp == nil then
+        local task = call:GetNextResponseAsync()
+        await(task)
+        local response_buffer = task.Result
+        if response_buffer == nil then
             print("end of response stream")
             return
         end
-        print(string.format("rsp: %q(%s)", rsp, type(rsp)))
-        response_message = self:decode_response(rsp)
+        print(string.format("response_buffer: %q(%s)", response_buffer, type(response_buffer)))
+        s = tolua.tolstring(response_buffer)
+        print("respones len: "..#s)
+        response_message = self:decode_response(response_buffer)
         func(response_messasge)
     end  -- while
 end
