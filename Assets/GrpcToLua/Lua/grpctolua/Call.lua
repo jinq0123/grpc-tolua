@@ -37,19 +37,38 @@ function Call:await_response()
     print(string.format("resp: %q(%s)", resp, type(resp)))
     local result = resp.Result
     print(string.format("result: %q(%s)", result, type(result)))
-    local output_type = self.method_info.output_type
-    local resp_msg = pb.decode(output_type, tolua.tolstring(result))
-    return resp_msg
+    return self:decode_response(result)
 end
 
 -- wait_for_each_response waits for the responses and calls the functor for each response.
 -- It must be called in coroutin.
 -- func is a function whick take the respones message as the parameter:
 function Call:wait_for_each_response(func)
+    assert(type(func) == "function", "func must be a function")
     local call = self.csharp_call
-    local stream = call.ResponseStream
-    print(string.format("stream: %q(%s)", stream, type(stream)))
-    stream.MoveNext()
+    local output_type = self.method_info.output_type
+    while (true) do
+        -- tolua must have wait_until(), or merge from https://github.com/woshihuo12/tolua
+        coroutine.wait_until(function()
+            return call.IsNextResponseReady()
+        end)
+        
+        local rsp = call.GetNextResponse()
+        if rsp == nil then
+            print("end of response stream")
+            return
+        end
+        print(string.format("rsp: %q(%s)", rsp, type(rsp)))
+        response_message = self:decode_response(rsp)
+        func(response_messasge)
+    end  -- while
+end
+
+-- decode_response decode response buffer into response message
+function Call:decode_response(response_buffer)
+    local output_type = self.method_info.output_type
+    local response_message = pb.decode(output_type, tolua.tolstring(response_buffer))
+    return response_message
 end
 
 -- TODO
