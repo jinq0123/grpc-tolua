@@ -118,7 +118,7 @@ namespace GrpcToLua
         {
             UnityEngine.Debug.LogFormat("Client.AsyncDuplexStreamingCall(methodNaame={0})", methodName);
             var method = clientStreamingMethods.GetMethod(methodName);
-            call = CallInvoker.AsyncDuplexStreamingCall(method, null, defaultCallOptions);
+            var call = CallInvoker.AsyncDuplexStreamingCall(method, null, defaultCallOptions);
             return new AsyncDuplexStreamingCall(call);
         }
 

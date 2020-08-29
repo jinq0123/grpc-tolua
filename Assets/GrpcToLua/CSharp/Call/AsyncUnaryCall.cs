@@ -1,3 +1,6 @@
+using System;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using grpc = Grpc.Core;
 
 namespace GrpcToLua
@@ -20,29 +23,29 @@ namespace GrpcToLua
         /// <summary>
         /// Asynchronous call result.
         /// </summary>
-        public Task<TResponse> ResponseAsync
+        public Task<byte[]> ResponseAsync
         {
             get
             {
-                return call.responseAsync;
+                return call.ResponseAsync;
             }
         }
 
         /// <summary>
         /// Asynchronous access to response headers.
         /// </summary>
-        public Task<Metadata> ResponseHeadersAsync
+        public Task<grpc::Metadata> ResponseHeadersAsync
         {
             get
             {
-                return call.ResponseHeadersAsync();
+                return call.ResponseHeadersAsync;
             }
         }
 
         /// <summary>
         /// Allows awaiting this object directly.
         /// </summary>
-        public TaskAwaiter<TResponse> GetAwaiter()
+        public TaskAwaiter<byte[]> GetAwaiter()
         {
             return call.GetAwaiter();
         }
@@ -51,7 +54,7 @@ namespace GrpcToLua
         /// Gets the call status if the call has already finished.
         /// Throws InvalidOperationException otherwise.
         /// </summary>
-        public Status GetStatus()
+        public grpc::Status GetStatus()
         {
             return call.GetStatus();
         }
@@ -60,7 +63,7 @@ namespace GrpcToLua
         /// Gets the call trailing metadata if the call has already finished.
         /// Throws InvalidOperationException otherwise.
         /// </summary>
-        public Metadata GetTrailers()
+        public grpc::Metadata GetTrailers()
         {
             return call.GetTrailers();
         }
