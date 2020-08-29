@@ -83,5 +83,10 @@ namespace GrpcToLua
         {
             call.Dispose();
         }
+        
+        public Task WriteAsync(byte[] requestData)
+        {
+            return call.RequestStream.WriteAsync(requestData);
+        }
     }
 }
