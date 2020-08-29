@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using grpc = Grpc.Core;
+using Grpc.Core;  // for MoveNext()
 
 namespace GrpcToLua
 {
@@ -10,12 +10,12 @@ namespace GrpcToLua
     /// </summary>
     public sealed class AsyncServerStreamingCall : IDisposable
     {
-        readonly grpc::AsyncServerStreamingCall<byte[]> call;
+        readonly AsyncServerStreamingCall<byte[]> call;
         
         /// <summary>
         /// Creates a new AsyncDuplexStreamingCall object.
         /// </summary>
-        public AsyncServerStreamingCall(grpc::AsyncServerStreamingCall<byte[]> call)
+        public AsyncServerStreamingCall(AsyncServerStreamingCall<byte[]> call)
         {
             this.call = call;
         }
@@ -23,7 +23,7 @@ namespace GrpcToLua
         /// <summary>
         /// Asynchronous access to response headers.
         /// </summary>
-        public Task<grpc::Metadata> ResponseHeadersAsync
+        public Task<Metadata> ResponseHeadersAsync
         {
             get
             {
@@ -35,7 +35,7 @@ namespace GrpcToLua
         /// Gets the call status if the call has already finished.
         /// Throws InvalidOperationException otherwise.
         /// </summary>
-        public grpc::Status GetStatus()
+        public Status GetStatus()
         {
             return call.GetStatus();
         }
@@ -44,7 +44,7 @@ namespace GrpcToLua
         /// Gets the call trailing metadata if the call has already finished.
         /// Throws InvalidOperationException otherwise.
         /// </summary>
-        public grpc::Metadata GetTrailers()
+        public Metadata GetTrailers()
         {
             return call.GetTrailers();
         }
@@ -67,7 +67,7 @@ namespace GrpcToLua
         public async Task<byte[]> GetNextResponseAsync()
         {
             var responseStream = call.ResponseStream;
-            bool ok = await responseStream.MoveNext(CancellationToken.None);
+            bool ok = await responseStream.MoveNext();
             if (ok) {
                 return responseStream.Current;
             }

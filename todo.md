@@ -24,3 +24,4 @@ LuaLooper:Update() (at Assets/ToLua/Misc/LuaLooper.cs:101)
 	* await_call() 仅用于 unary, 阻塞并返回 response
 	* async_call() 立即返回 AsyncCall 对象
 		- 可能分成4个不同类会好点
+* test to response an empty message, return nil or byte[]?

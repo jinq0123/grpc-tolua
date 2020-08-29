@@ -55,17 +55,19 @@ function Call:wait_for_each_response(func)
             print("end of response stream")
             return
         end
-        print(string.format("response_buffer: %q(%s)", response_buffer, type(response_buffer)))
+        -- print(string.format("response_buffer: %q(%s)", response_buffer, type(response_buffer)))
         s = tolua.tolstring(response_buffer)
-        print("respones len: "..#s)
+        -- print("response len: "..#s)
         response_message = self:decode_response(response_buffer)
-        func(response_messasge)
+        -- print(string.format("response_message: %q(%s)", response_message, type(response_message)))
+        func(response_message)
     end  -- while
 end
 
 -- decode_response decode response buffer into response message
 function Call:decode_response(response_buffer)
     local output_type = self.method_info.output_type
+    print("decode_response: type="..output_type)
     local response_message = pb.decode(output_type, tolua.tolstring(response_buffer))
     return response_message
 end
