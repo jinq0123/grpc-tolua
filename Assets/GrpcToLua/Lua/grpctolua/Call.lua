@@ -24,10 +24,10 @@ end
 
 setmetatable(Call, {__call = construct})
 
--- await_response waits for the response and returns it.
+-- wait_for_response waits for the response and returns it.
 -- It must be called in coroutine.
 -- TODO: return error
-function Call:await_response()
+function Call:wait_for_response()
     local call = self.csharp_call
     await(call)
     print(string.format("call: %q(%s)", call, type(call)))

@@ -55,7 +55,7 @@ function CoRecordRoute()
         coroutine.wait(0.1)
     end
     call:complete()
-    rsp = call:await_response()
+    rsp = call:wait_for_response()
     print('RecordRoute resonse: '..DumpTable(rsp))
 end
 

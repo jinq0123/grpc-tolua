@@ -73,7 +73,7 @@ end  -- call()
 -- It must be called in a coroutine.
 function Client:await_call(method_name, request)
     local call = self:call(method_name, request)
-    return call:await_response()
+    return call:wait_for_response()
 end
 
 --[[ assert request is table or nil
