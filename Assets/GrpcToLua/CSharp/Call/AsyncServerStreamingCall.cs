@@ -67,7 +67,7 @@ namespace GrpcToLua
         public async Task<byte[]> GetNextResponseAsync()
         {
             var responseStream = call.ResponseStream;
-            bool ok = await responseStream.MoveNext();
+            bool ok = await responseStream.MoveNext().ConfigureAwait(false);
             if (ok) {
                 return responseStream.Current;
             }
