@@ -73,7 +73,7 @@ public class RouteGuide : MonoBehaviour
         }
         else if (GUI.Button(new Rect(50, 200, 120, 45), "RouteChat"))
         {
-            funcName = "TestRecordRoute";
+            funcName = "TestRouteChat";
         }
         else
         {

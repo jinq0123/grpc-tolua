@@ -1,6 +1,6 @@
+using Grpc.Core;
 using System;
 using System.Threading.Tasks;
-using grpc = Grpc.Core;
 
 namespace GrpcToLua
 {
@@ -9,12 +9,12 @@ namespace GrpcToLua
     /// </summary>
     public sealed class AsyncDuplexStreamingCall : IDisposable
     {
-        readonly grpc::AsyncDuplexStreamingCall<byte[], byte[]> call;
+        readonly AsyncDuplexStreamingCall<byte[], byte[]> call;
 
         /// <summary>
         /// Creates a new AsyncDuplexStreamingCall object.
         /// </summary>
-        public AsyncDuplexStreamingCall(grpc::AsyncDuplexStreamingCall<byte[], byte[]> call)
+        public AsyncDuplexStreamingCall(AsyncDuplexStreamingCall<byte[], byte[]> call)
         {
             this.call = call;
         }
@@ -22,7 +22,7 @@ namespace GrpcToLua
         /// <summary>
         /// Asynchronous access to response headers.
         /// </summary>
-        public Task<grpc::Metadata> ResponseHeadersAsync
+        public Task<Metadata> ResponseHeadersAsync
         {
             get
             {
@@ -34,7 +34,7 @@ namespace GrpcToLua
         /// Gets the call status if the call has already finished.
         /// Throws InvalidOperationException otherwise.
         /// </summary>
-        public grpc::Status GetStatus()
+        public Status GetStatus()
         {
             return call.GetStatus();
         }
@@ -43,7 +43,7 @@ namespace GrpcToLua
         /// Gets the call trailing metadata if the call has already finished.
         /// Throws InvalidOperationException otherwise.
         /// </summary>
-        public grpc::Metadata GetTrailers()
+        public Metadata GetTrailers()
         {
             return call.GetTrailers();
         }
@@ -61,6 +61,26 @@ namespace GrpcToLua
         public void Dispose()
         {
             call.Dispose();
+        }
+        public Task WriteAsync(byte[] requestData)
+        {
+            return call.RequestStream.WriteAsync(requestData);
+        }
+
+        public Task CompleteAsync()
+        {
+            return call.RequestStream.CompleteAsync();
+        }
+
+        public async Task<byte[]> GetNextResponseAsync()
+        {
+            var responseStream = call.ResponseStream;
+            bool ok = await responseStream.MoveNext();
+            if (ok)
+            {
+                return responseStream.Current;
+            }
+            return null;
         }
     }
 }

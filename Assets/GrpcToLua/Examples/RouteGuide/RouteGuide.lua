@@ -39,11 +39,9 @@ function CoListFeatures()
     req = {lo = GetPoint(400000000, -750000000), hi = GetPoint(420000000, -730000000)}
     call = client:call('ListFeatures', req)
     print('ListFeature:')
-    call:wait_for_each_response(
-        function(rsp)
-            print(DumpTable(rsp))
-        end
-    )
+    call:wait_for_each_response(function(rsp)
+        print(DumpTable(rsp))
+    end)
 end
 
 function CoRecordRoute()
@@ -52,9 +50,8 @@ function CoRecordRoute()
     
     features = GetFeatures()
     for _, f in ipairs(features) do
-        print('call:await_write(f)...')
+        print('call:await_write(location)...')
         call:await_write(f.location)
-        print('coroutine.wait(0.1)...')
         coroutine.wait(0.1)
     end
     print('call:await_complete()')
@@ -72,18 +69,17 @@ function CoRouteChat()
     
     notes = GetRouteNotes()
     for _, n in ipairs(notes) do
-        call:write(n)
+        print('call:await_write(note)...')
+        call:await_write(n)
         coroutine.wait(0.1)
     end
-    call:complete()
+    call:await_complete()
 end
 
-function CoPrintResponse(call)
-    call:wait_for_each_response(
-        function(rsp)
-            print('RouteChat response: '..DumpTable(rsp))
-        end
-    )
+function CoPrintResponses(call)
+    call:wait_for_each_response(function(rsp)
+        print('RouteChat response: '..DumpTable(rsp))
+    end)
 end
 
 function GetPoint(latitude, longitude)
@@ -112,16 +108,16 @@ function GetFeatures()
     }
 end
 
-function GetNotes()
+function GetRouteNotes()
     return {
-        NewNote("First message", 0, 0),
-        NewNote("Second message", 0, 1),
-        NewNote("Third message", 1, 0),
-        NewNote("Fourth message", 0, 0)
+        NewRouteNote("First message", 0, 0),
+        NewRouteNote("Second message", 0, 1),
+        NewRouteNote("Third message", 1, 0),
+        NewRouteNote("Fourth message", 0, 0)
     }
 end
 
-function NewNote(message, lat, lon)
+function NewRouteNote(message, lat, lon)
     return {
         message = message,
         location = GetPoint(lat, lon)
