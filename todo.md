@@ -15,3 +15,4 @@
 		- 可能分成4个不同类会好点
 * test to response an empty message, return nil or byte[]?
 * Secure channel
+* Extract c# layer: dynamic grpc
