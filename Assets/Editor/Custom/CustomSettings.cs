@@ -164,6 +164,7 @@ public static class CustomSettings
         _GT(typeof(GrpcToLua.InsecureCredentials)),
         _GT(typeof(System.Runtime.CompilerServices.TaskAwaiter)),
         _GT(typeof(System.Runtime.CompilerServices.TaskAwaiter<byte[]>)),
+        // _GT(typeof(System.Runtime.CompilerServices.TaskAwaiter<object>)),
         _GT(typeof(System.Threading.Tasks.Task<byte[]>)),
         // _GT(typeof(System.Threading.Tasks.Task<object>)),
     };

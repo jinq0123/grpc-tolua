@@ -50,11 +50,6 @@ function CoRecordRoute()
     print('CoRecordRoute')
     call = client:call('RecordRoute')
     
-    coroutine.start(function()
-        rsp = call:wait_for_response()
-        print('RecordRoute resonse: '..DumpTable(rsp))
-    end)
-    
     features = GetFeatures()
     for _, f in ipairs(features) do
         print('call:await_write(f)...')
@@ -64,6 +59,9 @@ function CoRecordRoute()
     end
     print('call:await_complete()')
     call:await_complete()
+
+    rsp = call:wait_for_response()
+    print('RecordRoute resonse: '..DumpTable(rsp))
 end
 
 function CoRouteChat()
