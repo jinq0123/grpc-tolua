@@ -65,7 +65,7 @@ function CoRouteChat()
     print('CoRouteChat')
     call = client:call('RouteChat')
     
-    coroutine.start(function() CoPrintResponses(call) end)
+    -- TODO: coroutine.start(function() CoPrintResponses(call) end)
     
     notes = GetRouteNotes()
     for _, n in ipairs(notes) do
@@ -73,13 +73,17 @@ function CoRouteChat()
         call:await_write(n)
         coroutine.wait(0.1)
     end
+    print('call:await_complete()')
     call:await_complete()
+    
+    CoPrintResponses(call)
 end
 
 function CoPrintResponses(call)
     call:wait_for_each_response(function(rsp)
         print('RouteChat response: '..DumpTable(rsp))
     end)
+    print("end of CoPrintResponses()")
 end
 
 function GetPoint(latitude, longitude)

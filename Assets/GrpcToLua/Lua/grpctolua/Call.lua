@@ -41,7 +41,7 @@ function Call:wait_for_response()
 end
 
 -- wait_for_each_response waits for the responses and calls the functor for each response.
--- It must be called in coroutin.
+-- It must be called in coroutine.
 -- func is a function whick take the respones message as the parameter:
 function Call:wait_for_each_response(func)
     assert(type(func) == "function", "func must be a function")
@@ -49,6 +49,7 @@ function Call:wait_for_each_response(func)
     local output_type = self.method_info.output_type
     while (true) do
         local task = call:GetNextResponseAsync()
+        print(string.format("Call:wait_for_each_response, await(task=%q(%s))", task, type(task)))
         await(task)
         local response_buffer = task.Result
         if response_buffer == nil then
