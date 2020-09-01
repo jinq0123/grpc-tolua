@@ -30,14 +30,14 @@ end
 
 function CoGetFeature()
     print('CoGetFeature')
-    feature = client:await_call('GetFeature', GetPoint(409146138, -746188906))
+    local feature = client:await_call('GetFeature', GetPoint(409146138, -746188906))
     print('feature: '..DumpTable(feature))
 end
 
 function CoListFeatures()
     print('CoListFeatures')
-    req = {lo = GetPoint(400000000, -750000000), hi = GetPoint(420000000, -730000000)}
-    call = client:call('ListFeatures', req)
+    local req = {lo = GetPoint(400000000, -750000000), hi = GetPoint(420000000, -730000000)}
+    local call = client:call('ListFeatures', req)
     print('ListFeature:')
     call:wait_for_each_response(function(rsp)
         print(DumpTable(rsp))
@@ -46,9 +46,14 @@ end
 
 function CoRecordRoute()
     print('CoRecordRoute')
-    call = client:call('RecordRoute')
+    local call = client:call('RecordRoute')
+
+    coroutine.start(function()
+        local rsp = call:wait_for_response()
+        print('RecordRoute resonse: '..DumpTable(rsp))
+    end)
     
-    features = GetFeatures()
+    local features = GetFeatures()
     for _, f in ipairs(features) do
         print('call:await_write(location)...')
         call:await_write(f.location)
@@ -56,18 +61,15 @@ function CoRecordRoute()
     end
     print('call:await_complete()')
     call:await_complete()
-
-    rsp = call:wait_for_response()
-    print('RecordRoute resonse: '..DumpTable(rsp))
 end
 
 function CoRouteChat()
     print('CoRouteChat')
-    call = client:call('RouteChat')
+    local call = client:call('RouteChat')
     
     coroutine.start(function() CoPrintResponses(call) end)
     
-    notes = GetRouteNotes()
+    local notes = GetRouteNotes()
     for _, n in ipairs(notes) do
         print('call:await_write(note)...')
         call:await_write(n)
