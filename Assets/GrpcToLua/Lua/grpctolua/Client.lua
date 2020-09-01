@@ -27,47 +27,9 @@ function Client:call(method_name, request)
     print(string.format("Client:call(method_name=%q, request=%q)", method_name, request))
     local method_info = assert(self.client:GetMethodInfo(method_name))
     assert(type(method_info) == "table", "method_info must be a table")
-    
-    local clt = self.client
-    local is_server_streaming = method_info.is_server_streaming
-    if method_info.is_client_streaming then
-        assert(request == nil, method_name .. "() is server streaming method, request must be nil")
-        if is_server_streaming then
-            local csharp_call = clt:AsyncDuplexStreamingCall(method_name)
-            return Call(csharp_call, method_info)
-        end
-        local csharp_call = clt:AsyncClientStreamingCall(method_name)
-        return Call(csharp_call, method_info)
-    end
-    
-    assert(type(request) == "table", method_name .. "() request must be a table, but got " .. type(request))
-    local request_data = assert(pb.encode(method_info.input_type, request))
-    if is_server_streaming then
-        local csharp_call = clt:AsyncServerStreamingCall(method_name, request_data)
-        return Call(csharp_call, method_info)
-    end
-    local csharp_call = clt:AsyncUnaryCall(method_name, request_data)
+    local csharp_call = self:_csharp_call(method_name, request, method_info)
     return Call(csharp_call, method_info)
 end  -- call()
-
--- _call returns c# Call object: 
--- AsyncUnaryCall<T>, AsyncServerStreamingCall<T>, AsyncClientStreamingCall<T> or AsyncDuplexStreamingCall<T>,
---  where T is grpc request type byte[]
-
---[[
-function Client:_call(method_name, request_data, is_server_streaming, is_client_streaming)
-    assert(type(request_data) == string)
-    local clt = self.client
-    if is_client_streaming and is_server_streaming then
-        return clt:AsyncDuplexStreamingCall(method_name, request_data)
-    elseif is_client_streaming then
-        return clt:AsyncClientStreamingCall(method_name, request_data)
-    elseif is_server_streaming then
-        return clt:AsyncServerStreamingCall(method_name, request_data)
-    end
-    return clt:AsyncUnaryCall(method_name, request_data)
-end  -- call()
-]]
 
 -- await_call calls the rpc method and wait for the response.
 -- It must be called in a coroutine.
@@ -76,14 +38,34 @@ function Client:await_call(method_name, request)
     return call:wait_for_response()
 end
 
---[[ assert request is table or nil
-local assert_request(request, is_server_streaming, method_name)
-    if is_server_streaming then
-        assert(request == nil, method_name .. "() is server streaming method, request must be nil")
+-- assert request is table or nil
+local function assert_request(request, is_client_streaming, method_name)
+    if is_client_streaming then
+        assert(request == nil, method_name .. "() is client streaming method, request must be nil")
         return
     end
     request_type = type(request)
     assert(request_type == "table", method_name .. "() request must be a table, but got " .. request_type)
-end]]
+end
+
+-- _csharp_call returns c# Call object: 
+-- AsyncUnaryCall, AsyncServerStreamingCall, AsyncClientStreamingCall or AsyncDuplexStreamingCall,
+function Client:_csharp_call(method_name, request, method_info)
+    assert_request(request, method_info.is_client_streaming, method_name)
+    local clt = self.client
+    local is_server_streaming = method_info.is_server_streaming
+    if method_info.is_client_streaming then
+        if is_server_streaming then
+            return clt:AsyncDuplexStreamingCall(method_name)
+        end
+        return clt:AsyncClientStreamingCall(method_name)
+    end
+    
+    local request_data = assert(pb.encode(method_info.input_type, request))
+    if is_server_streaming then
+        return clt:AsyncServerStreamingCall(method_name, request_data)
+    end
+    return clt:AsyncUnaryCall(method_name, request_data)
+end  -- _csharp_call()
 
 return Client
