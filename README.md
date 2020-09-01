@@ -15,53 +15,72 @@ It uses [tolua](https://github.com/topameng/tolua) to bind Unity C# and Lua.
 See [`Examples/RouteGuide`](Assets/GrpcToLua/Examples/RouteGuide)
 
 ```
-local channel = grpc.Channel.New("localhost:50051")
-local stub = grcp.Stub.New(channel, "routeguide.RouteGuide")
+local grpctolua = require('grpctolua')
 
--- TODO: stub.Call() should be called in a coroutine
+local channel = grpctolua.new_channel('localhost:50051')
+local client = grpctolua.new_client(channel, 'routeguide.RouteGuide')
 
-function GetFeature()
-	point = {
-		Latitude = 409146138,
-		Longitude = -746188906
-	}
-	feature = stub.Call("GetFeature", point)
-	print(inspect(feature))
+grpctolua.load_descriptor_set_from_file('route_guide.pb')
+
+function TestGetFeature()
+    coroutine.start(CoGetFeature)
 end
 
-function ListFeatures()
-	rectangle = {
-		Lo = { Latitude = 400000000, Longitude = -750000000 },
-		Hi = { Latitude = 420000000, Longitude = -730000000 }
-	}
-	features = stub.Call("ListFeatures", rectangle)
-	for feature in features
-		print(inspect(feature))
-	end
+function TestListFeatures()
+    coroutine.start(CoListFeatures)
 end
 
-function RecordRoute()
-	recorder = stub.Call("RecordRoute")
-	for point in points
-		recorder.RequestStream.Write(point)
-		coroutine.Sleep(0.1)
-	end
+function TestRecordRoute()
+    coroutine.start(CoRecordRoute)
 end
 
-functine RouteChat()
-	call = stub.Call("RouteChat")
-	responseStream = call.ResponseStream
-	coroutine.create(
-		function()
-			for routeNote in responseStream
-				print(inspect(routeNote))
-			end  -- for
-		end  -- function
-	)  -- coroutine.create
-	
-	for routeNote in requests
-		call.RequestStream.Write(routeNote)
-	end
+function TestRouteChat()
+    coroutine.start(CoRouteChat)
+end
+
+function CoGetFeature()
+    local feature = client:await_call('GetFeature', GetPoint(409146138, -746188906))
+    print('feature: '..DumpTable(feature))
+end
+
+function CoListFeatures()
+    local req = {lo = GetPoint(400000000, -750000000), hi = GetPoint(420000000, -730000000)}
+    local call = client:call('ListFeatures', req)
+    call:wait_for_each_response(function(rsp)
+        print(DumpTable(rsp))
+    end)
+end
+
+function CoRecordRoute()
+    local call = client:call('RecordRoute')
+    coroutine.start(function()
+        local rsp = call:wait_for_response()
+        print('RecordRoute resonse: '..DumpTable(rsp))
+    end)
+    
+    local features = GetFeatures()
+    for _, f in ipairs(features) do
+        print('call:await_write(location)...')
+        call:await_write(f.location)
+    end
+    call:await_complete()
+end
+
+function CoRouteChat()
+    local call = client:call('RouteChat')
+    coroutine.start(function() CoPrintResponses(call) end)
+    
+    local notes = GetRouteNotes()
+    for _, n in ipairs(notes) do
+        call:await_write(n)
+    end
+    call:await_complete()
+end
+
+function CoPrintResponses(call)
+    call:wait_for_each_response(function(rsp)
+        print('RouteChat response: '..DumpTable(rsp))
+    end)
 end
 ```
 
