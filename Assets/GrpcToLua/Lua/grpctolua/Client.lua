@@ -44,7 +44,7 @@ local function assert_request(request, is_client_streaming, method_name)
         assert(request == nil, method_name .. "() is client streaming method, request must be nil")
         return
     end
-    request_type = type(request)
+    local request_type = type(request)
     assert(request_type == "table", method_name .. "() request must be a table, but got " .. request_type)
 end
 
