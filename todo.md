@@ -1,6 +1,5 @@
 # Todo
 
-* Duplex streaming call deadlock
 * Is lua.Collect() necessary?
 * Allow to add proto descriptor file in any order
 	+ Provide a method to verify all dependencies are added
@@ -16,3 +15,4 @@
 * test to response an empty message, return nil or byte[]?
 * Secure channel
 * Extract c# layer: dynamic grpc
+* Stop coroutine on quit
