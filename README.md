@@ -14,7 +14,7 @@ It uses [tolua](https://github.com/topameng/tolua) to bind Unity C# and Lua.
 
 See [`Examples/RouteGuide`](Assets/GrpcToLua/Examples/RouteGuide)
 
-```
+```lua
 local grpctolua = require('grpctolua')
 
 local channel = grpctolua.new_channel('localhost:50051')
@@ -98,8 +98,20 @@ end
 	public static BindType[] customTypeList =
 	{
 		...
-		_GT(typeof(Grpc.Core.Channel)),
-		_GT(typeof(Grpc.Core.ChannelCredentials)),
+        // GrpcToLua
+        _GT(typeof(Grpc.Core.Channel)),
+        _GT(typeof(Grpc.Core.ChannelCredentials)),
+        _GT(typeof(Grpc.Core.Status)),
+        _GT(typeof(GrpcToLua.AsyncUnaryCall)),
+        _GT(typeof(GrpcToLua.AsyncServerStreamingCall)),
+        _GT(typeof(GrpcToLua.AsyncClientStreamingCall)),
+        _GT(typeof(GrpcToLua.AsyncDuplexStreamingCall)),
+        _GT(typeof(GrpcToLua.Client)),
+        _GT(typeof(GrpcToLua.DescriptorSetLoader)),
+        _GT(typeof(GrpcToLua.InsecureCredentials)),
+        _GT(typeof(System.Runtime.CompilerServices.TaskAwaiter)),
+        _GT(typeof(System.Runtime.CompilerServices.TaskAwaiter<byte[]>)),
+        _GT(typeof(System.Threading.Tasks.Task<byte[]>)),
 	}
 	```
 1. Add in `Assets\ToLua\Editor\ToLuaExport.cs memberFilter`
