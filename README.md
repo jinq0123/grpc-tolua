@@ -131,7 +131,6 @@ end
 Make sure to add lua search path like this:
 ```
     lua = new LuaState();
-    LuaFileUtils.Instance.AddSearchPath(Application.dataPath + "/GrpcToLua/Lua/?/init.lua");
     lua.AddSearchPath(Application.dataPath + "/GrpcToLua/Lua");
 ```
 

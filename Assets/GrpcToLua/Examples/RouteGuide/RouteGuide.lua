@@ -1,4 +1,4 @@
-﻿local grpctolua = require('grpctolua')
+﻿local grpctolua = require('grpctolua.grpctolua')
 
 local channel = grpctolua.new_channel('localhost:50051')
 local client = grpctolua.new_client(channel, 'routeguide.RouteGuide')
