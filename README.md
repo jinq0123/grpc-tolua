@@ -86,6 +86,18 @@ end
 
 ## How to run example
 
+1. Open `Assets\GrpcToLua\Examples\RouteGuide\RouteGuide.unity`
+1. Menu: Lua -> Generate All
+1. Run a server on port 50051. For example [go server](https://github.com/grpc/grpc-go/tree/master/examples/route_guide/server)
+1. Play
+
+It can only run on Windows 64 because only Plugins\x86_64\tolua.dll is updated to support lua-protobuf.
+On other platforms it will be error with: attempt to call field 'load' (a nil value).
+Please [Integrate starwing/lua-protobuf](http://changxianjie.gitee.io/unitypartner/2019/10/01/tolua%E4%B8%AD%E4%BD%BF%E7%94%A8protobuf3%E2%80%94%E9%9B%86%E6%88%90lua-protobuf/)
+  for other platforms.
+
+## How to update
+
 1. Update to the latest tolua
 	* Copy Assets, Unity5.x, Luajit64, Luajit from tolua
 	* Copy `coroutine.wait_until(conditionFunc, co)` from https://github.com/woshihuo12/tolua
@@ -123,8 +135,6 @@ end
         ...
 	}
 	```
-1. Open `Assets\GrpcToLua\Examples\RouteGuide\RouteGuide.unity`
-1. Lua -> Generate All
 
 ## Trouble Shooting
 
