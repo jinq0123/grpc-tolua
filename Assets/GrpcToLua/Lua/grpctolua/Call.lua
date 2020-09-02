@@ -6,6 +6,8 @@ Call.__index = Call
 
 local await = require("grpctolua.await")
 
+local statusCodeOK = Grpc.Core.StatusCode.OK
+
 local function construct(self, csharp_call, method_info)
     assert(type(csharp_call) == "userdata")
     assert(type(method_info) == "table")
@@ -30,13 +32,16 @@ setmetatable(Call, {__call = construct})
 function Call:wait_for_response()
     local call = self.csharp_call
     await(call)
-    print(string.format("call: %q(%s)", call, type(call)))
+    -- TODO: get result buffer on OK or nil with error message in one call
     local status = call:GetStatus()
-    print(string.format("status: %q(%s)", status, type(status)))
-    local resp = call.ResponseAsync
-    print(string.format("resp: %q(%s)", resp, type(resp)))
-    local result = resp.Result
-    print(string.format("result: %q(%s)", result, type(result)))
+    -- print(string.format("status: %q(%s)", status, type(status)))
+    local sc = status.StatusCode
+    -- print(string.format("status code: %q(%s)", sc, type(sc)))
+    if sc ~= statusCodeOK then
+        return nil, status.Detail -- errors occurred
+    end
+    local result = call.ResponseAsync.Result
+    -- print(string.format("result: %q(%s)", result, type(result)))
     return self:_decode_response(result)
 end
 

@@ -155,6 +155,7 @@ public static class CustomSettings
         _GT(typeof(Grpc.Core.Channel)),
         _GT(typeof(Grpc.Core.ChannelCredentials)),
         _GT(typeof(Grpc.Core.Status)),
+        _GT(typeof(Grpc.Core.StatusCode)),
         _GT(typeof(GrpcToLua.AsyncUnaryCall)),
         _GT(typeof(GrpcToLua.AsyncServerStreamingCall)),
         _GT(typeof(GrpcToLua.AsyncClientStreamingCall)),

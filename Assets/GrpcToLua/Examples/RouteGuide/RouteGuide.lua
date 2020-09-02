@@ -30,7 +30,7 @@ end
 
 function CoGetFeature()
     print('CoGetFeature')
-    local feature = client:await_call('GetFeature', GetPoint(409146138, -746188906))
+    local feature = assert(client:await_call('GetFeature', GetPoint(409146138, -746188906)))
     print('feature: '..DumpTable(feature))
 end
 
