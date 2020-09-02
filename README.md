@@ -91,6 +91,7 @@ end
 	* Copy `coroutine.wait_until(conditionFunc, co)` from https://github.com/woshihuo12/tolua
 		+ See commit 441d9f
 1. [Integrate starwing/lua-protobuf](http://changxianjie.gitee.io/unitypartner/2019/10/01/tolua%E4%B8%AD%E4%BD%BF%E7%94%A8protobuf3%E2%80%94%E9%9B%86%E6%88%90lua-protobuf/)
+	* Plugins\x86_64\tolua.dll is lua-protobuf ready
 1. Update grpc_unity_package
 	* https://github.com/grpc/grpc/tree/master/src/csharp/experimental#unity
 1. Add in `Assets\Editor\Custom\CustomSetting.cs customTypeList`
