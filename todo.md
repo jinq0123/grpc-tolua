@@ -1,5 +1,18 @@
 # Todo
 
+* Dead when server is off.
+	```
+	LuaException: event:172: System/coroutine:127: One or more errors occurred.
+	stack traceback:
+		[C]: in function '__index'
+		grpctolua/Call:38: in function 'await_call'
+		RouteGuide:33: in function <RouteGuide:31>
+	System.Threading.Tasks.Task`1:get_Result()
+	System_Threading_Tasks_Task_bytesWrap:get_Result(IntPtr) (at Assets/Source/Generate/System_Threading_Tasks_Task_bytesWrap.cs:362)
+	LuaInterface.LuaDLL:tolua_lateupdate(IntPtr)
+	LuaInterface.LuaStatePtr:LuaLateUpdate() (at Assets/ToLua/Core/LuaStatePtr.cs:623)
+	LuaLooper:LateUpdate() (at Assets/ToLua/Misc/LuaLooper.cs:113)
+	```
 * Is lua.Collect() necessary?
 * Allow to add proto descriptor file in any order
 	+ Provide a method to verify all dependencies are added
