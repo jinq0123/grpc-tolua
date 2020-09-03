@@ -86,6 +86,8 @@ end
 
 ## How to run example
 
+1. Copy grpc_unity_package into Assets dir
+	* https://github.com/grpc/grpc/tree/master/src/csharp/experimental#unity
 1. Open `Assets\GrpcToLua\Examples\RouteGuide\RouteGuide.unity`
 1. Menu: Lua -> Generate All
 1. Run a server on port 50051. For example [go server](https://github.com/grpc/grpc-go/tree/master/examples/route_guide/server)
@@ -98,14 +100,14 @@ Please [Integrate starwing/lua-protobuf](http://changxianjie.gitee.io/unitypartn
 
 ## How to update
 
+1. Update grpc_unity_package
 1. Update to the latest tolua
 	* Copy Assets, Unity5.x, Luajit64, Luajit from tolua
 	* Copy `coroutine.wait_until(conditionFunc, co)` from https://github.com/woshihuo12/tolua
 		+ See commit 441d9f
 1. [Integrate starwing/lua-protobuf](http://changxianjie.gitee.io/unitypartner/2019/10/01/tolua%E4%B8%AD%E4%BD%BF%E7%94%A8protobuf3%E2%80%94%E9%9B%86%E6%88%90lua-protobuf/)
-	* Plugins\x86_64\tolua.dll is lua-protobuf ready
-1. Update grpc_unity_package
-	* https://github.com/grpc/grpc/tree/master/src/csharp/experimental#unity
+	* Update plugins
+		* only Plugins\x86_64\tolua.dll is lua-protobuf ready
 1. Add in `Assets\Editor\Custom\CustomSetting.cs customTypeList`
 	```
 	public static BindType[] customTypeList =
